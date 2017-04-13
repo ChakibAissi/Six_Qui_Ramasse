@@ -4,19 +4,22 @@
 		protected $user;
 		
 		public function __construct($request){
-			if(!empty($_SESSION['login']) && !empty($_SESSION['password'])){
+			parent::__construct($request);
+			$_SESSION['controller'] = 'user';
+		}
+		
+		public function execute(){
+			if(!empty($_SESSION['login']) && !empty($_SESSION['password']))
 				$this->user = User::tryLogin($_SESSION['login'], $_SESSION['password']);
-			}
 			else if(!empty($_POST['login']) && !empty($_POST['password'])){
 				$this->user = User::tryLogin($_POST['login'], $_POST['password']);	
-				$_SESSION['controller'] = 'user';
 				$_SESSION['user'] = $this->user;
 				$_SESSION['login'] = $_POST['login'];
 				$_SESSION['password'] = $_POST['password'];
 			}
 			else
-				$this->setArg('userErrorText', 'Impossible de récuperer l\'utilisateur dans la base de données');
-			parent::__construct($request);
+				$this->setArg('erreurUser', 'Impossible de récuperer l\'utilisateur dans la base de données');
+			parent::execute();
 		}
 		
 		public function defaultAction(){

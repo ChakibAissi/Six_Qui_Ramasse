@@ -21,20 +21,20 @@
 		public function getControllerName(){
 			if(isset($_SESSION['controller']))
 				Request::$uniqueInstance->controllerName = $_SESSION['controller'];
-			else if(isset($_GET['controller']))
-				Request::$uniqueInstance->controllerName = $_GET['controller'];
 			else if(isset($_POST['controller']))
 				Request::$uniqueInstance->controllerName = $_POST['controller'];
+			else if(isset($_GET['controller']))
+				Request::$uniqueInstance->controllerName = $_GET['controller'];
 			return Request::$uniqueInstance->controllerName;
 		}
 		
 		public function getActionName(){
 			if(isset($_SESSION["action"]))
 				Request::$uniqueInstance->actionName = $_SESSION["action"];
-			else if(isset($_GET["action"]))
-				Request::$uniqueInstance->actionName = $_GET["action"];
 			else if(isset($_POST["action"]))
 				Request::$uniqueInstance->actionName = $_POST["action"];
+			else if(isset($_GET["action"]))
+				Request::$uniqueInstance->actionName = $_GET["action"];
 			return Request::$uniqueInstance->actionName;
 		}
 		
