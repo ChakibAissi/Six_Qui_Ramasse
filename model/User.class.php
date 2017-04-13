@@ -40,6 +40,10 @@
 				return $user;
 		}
 		
+		public function creerPartie(){
+			
+		}
+		
 		public static function getList(){
 			return self::query('USER_LIST');
 		}

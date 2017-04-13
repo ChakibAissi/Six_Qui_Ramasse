@@ -3,6 +3,7 @@
 		
 		public function __construct($controller, $args = array()){
 			parent::__construct($controller, 'userContent', $args);
+			$this->setTemplateName('menu', 'userMenu');
 		}
 	}
 ?>

@@ -15,6 +15,10 @@
 			$this->templateNames['footer'] = 'footer';
 		}
 		
+		public function setTemplateName($key, $value){
+			$this->templateNames[$key] = $value;
+		}
+		
 		public function render(){
 			$this->loadTemplate($this->templateNames['header'], $this->args);
 			$this->loadTemplate($this->templateNames['top'], $this->args);

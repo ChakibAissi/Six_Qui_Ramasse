@@ -6,17 +6,13 @@
 		}
 
 		public function execute(){
-			if(isset($_COOKIE['action'])){
-				if($_COOKIE['action'] == 'inscription'){
-					setcookie('tryInscription','',time()-1);
-					return $this->validateInscription($_POST);
-				}
-				else if($_COOKIE['action'] == 'connection'){
-					setcookie('action','',time()-1);
-					return $this->validateConnection($_POST);
-				}
-			}
-			parent::execute();
+			$action = $this->request->getActionName();
+			if($action == 'inscription')
+				$this->validateInscription();
+			else if($action == 'connection')
+				$this->validateConnection();
+			else
+				parent::execute();
 		}
 		
 		public function defaultAction(){
@@ -25,18 +21,18 @@
 		}
 		
 		public function inscription(){
-			setcookie('action', 'inscription', time() + 365*24*3600, null, null, false, true);
+			$_SESSION['action'] = 'inscription';
 			$view = new InscriptionView($this, $this->args);			
 			$view->render();
 		}
 		
 		public function connection(){
-			setcookie('action', 'connection', time() + 365*24*3600, null, null, false, true);
+			$_SESSION['action'] = 'connection';
 			$view = new ConnectionView($this, $this->args);
 			$view->render();
 		}
 		
-		public function validateInscription($args) {
+		public function validateInscription() {
 			if(!empty($_POST['inscriptionLogin']) && !empty($_POST['inscriptionPassword'])){
 				$login = $_POST['inscriptionLogin'];
 				if(User::isLoginUsed($login)) {
@@ -62,6 +58,7 @@
 							$newRequest->write('controller','user');
 						$newRequest->write('login',$login);
 						$newRequest->write('password',$password);
+						$newRequest->initAction();
 						$userController = Dispatcher::getCurrentDispatcher()->dispatch($newRequest);
 						$userController->execute();
 					}
@@ -81,7 +78,7 @@
 			}
 		}
 		
-		public function validateConnection($args) {
+		public function validateConnection() {
 			if(!empty($_POST['connectionLogin']) && !empty($_POST['connectionPassword'])){
 				$login = $_POST['connectionLogin'];
 				if(User::isLoginUsed($login)) {
@@ -100,6 +97,7 @@
 							$newRequest->write('controller','user');
 						$newRequest->write('login',$login);
 						$newRequest->write('password',$password);
+						$newRequest->initAction();
 						$userController = Dispatcher::getCurrentDispatcher()->dispatch($newRequest);
 						$userController->execute();
 					}

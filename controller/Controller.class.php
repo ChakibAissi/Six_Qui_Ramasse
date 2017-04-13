@@ -15,7 +15,13 @@
 			
 			if(!method_exists($this, $methodName))
 				throw new Exception("$methodName n'existe pas");
-			$this->$methodName($this->request);
+			$this->$methodName();
+		}
+		
+		public function home(){
+			$this->request->initAction();
+
+			header('Location: index.php');
 		}
 	}
 ?>

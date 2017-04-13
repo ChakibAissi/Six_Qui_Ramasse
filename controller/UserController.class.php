@@ -32,5 +32,9 @@
 			session_destroy();
 			header('Location: index.php');
 		}
+		
+		public function creerPartie(){
+			header('Location: index.php');
+		}
 	}
 ?>
