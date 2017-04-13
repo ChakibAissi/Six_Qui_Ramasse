@@ -6,17 +6,11 @@
 		private $mail;
 		private $score;
 		
-		public function login(){
-			return $this->login;
-		}
+		public function login(){ return $this->login; }
 		
-		public function mail(){
-			return $this->mail;
-		}
+		public function mail(){ return $this->mail; }
 		
-		public function score(){
-			return $this->score;
-		}
+		public function score(){ return $this->score; }
 		
 		public static function isLoginUsed($login){
 			$isUsed = FALSE;
@@ -38,10 +32,6 @@
 			$st = parent::query($sql);
 			if($user = $st->fetch())
 				return $user;
-		}
-		
-		public function creerPartie(){
-			
 		}
 		
 		public static function getList(){

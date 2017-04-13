@@ -34,7 +34,12 @@
 		}
 		
 		public function creerPartie(){
+			Partie::creerPartie($this->user->login());
 			header('Location: index.php');
+		}
+		
+		public function listeParties(){
+			Partie::listeParties($this->user->login());
 		}
 	}
 ?>

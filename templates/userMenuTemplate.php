@@ -2,4 +2,5 @@
 			<h1>Menu</h1>
 			<button><a href="index.php?action=home">Home</a></button>
 			<button><a href="index.php?action=creerPartie">Creer Partie</a></button>
+			<button><a href="index.php?action=listeParties">Mes Parties</a></button>
 		</div>
