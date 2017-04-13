@@ -1,6 +1,8 @@
 <?php
 	class Model extends MyObject{
 		
+		protected $userProperties;
+		
 		protected static function db(){
 			return DatabasePDO::singleton();
 		}
@@ -11,8 +13,6 @@
 			$st->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, get_called_class());
 			return $st;
 		}
-		
-		protected $userProperties;
 		
 		public function __construct($userProperties = array()){
 				$this->userProperties = $userProperties;

@@ -18,19 +18,12 @@
 	// Load the Loader class to automatically load classes when needed
 	require_once(__ROOT_DIR . '/classes/AutoLoader.class.php');
 
-	if(isset($_POST['controller'])){
-		echo 'Dans le post controller = ' . $_POST['controller'] . '<br>';
-	}
-	//if(isset
-		echo 'Dans le instance de request controller = ' . Request::getCurrentRequest()->getControllerName() . '<br>';
-	//}			
 	// Reify the current request
 	$request = Request::getCurrentRequest();
 
 	try {
 		// Instantiate the adequat controller according to the current request
 		$controller = Dispatcher::getCurrentDispatcher()->dispatch($request);
-		echo 'avant execute <br>';
 		
 		// Execute the requested action
 		$controller->execute();

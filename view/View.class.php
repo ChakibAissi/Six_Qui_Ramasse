@@ -15,14 +15,6 @@
 			$this->templateNames['footer'] = 'footer';
 		}
 		
-		//recupere une valeur de $_POST et le met dans args avec la key.
-		public function recupValuePOST_ToArgs($keyPOST, $keyArgs){
-			if(isset($_POST[$keyPOST]))
-				$this->setArg($keyArgs,$_POST[$keyPOST]);
-			/*else
-				$this->setArg($keyArgs, 'NoValue');*/
-		}
-		
 		public function render(){
 			$this->loadTemplate($this->templateNames['header'], $this->args);
 			$this->loadTemplate($this->templateNames['top'], $this->args);

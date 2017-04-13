@@ -11,13 +11,10 @@
 		public abstract function defaultAction();
 		
 		public function execute(){
-			echo 'execute <br>';
 			$methodName = $this->request->getActionName();
-			echo 'MethodName : ' . $methodName . '<br>';
 			
-			if(!method_exists($this, $methodName)){
+			if(!method_exists($this, $methodName))
 				throw new Exception("$methodName n'existe pas");
-			}
 			$this->$methodName($this->request);
 		}
 	}

@@ -3,7 +3,6 @@
 		
 		public function __construct($controller, $args = array()){
 			parent::__construct($controller, $args);
-			$this->render();
 		}
 		
 		

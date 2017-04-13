@@ -14,9 +14,8 @@
 		
 		public function read($key){
 			$value = '';
-			if(isset($this[$key])){
+			if(isset($this[$key]))
 				$value = $this[$key];
-			}
 			return $value;
 		}
 	}

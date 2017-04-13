@@ -1,6 +1,12 @@
+git pull --rebase
+git add myFile
+git commit
+git pull --rebase
+git push
+
 A faire en priorité
 -Menu
--creerPartie.
+-creerPartie.(Chakib) bdd remplir les table partie et invitation
 -invitation.
 -rejoindrePartie.
 -jouer(programmation, calcul des scores, mouvement des cartes, position des joueurs sur l'écran, fin de partie, animation victoire/défaite).

@@ -3,132 +3,122 @@
 		
 		public function __construct($request){
 			parent::__construct($request);
+		}
+
+		public function execute(){
 			if(isset($_COOKIE['action'])){
 				if($_COOKIE['action'] == 'inscription'){
-					echo 'Avant ValideInscription<br>';
 					setcookie('tryInscription','',time()-1);
-					if(!empty($_POST['inscriptionLogin']) && !empty($_POST['inscriptionPassword'])){
-						echo 'Return Constructeur <br>';
-						$this->validateInscription($_POST);
-						echo 'N a pas retourné Constructeur <br>';
-					}
-					echo 'Apres ValideInscription<br>';
+					return $this->validateInscription($_POST);
 				}
 				else if($_COOKIE['action'] == 'connection'){
-					echo 'Avant ValideConnection<br>';
 					setcookie('action','',time()-1);
-					if(!empty($_POST['connectionLogin']) && !empty($_POST['connectionPassword'])){
-						echo 'Tentative connection<br>';
-						$this->validateConnection($_POST);
-						echo 'Connection ratée <br>';
-					}
-					echo 'Apres ValideConnection<br>';
+					return $this->validateConnection($_POST);
 				}
 			}
+			parent::execute();
 		}
 		
 		public function defaultAction(){
-			echo 'defauftAction AnonymousController <br>';
 			$view = new AnonymousView($this, $_POST);
 			$view->render();
 		}
 		
 		public function inscription(){
 			setcookie('action', 'inscription', time() + 365*24*3600, null, null, false, true);
-			$view = new InscriptionView($this);
-			if(!empty($_POST['inscErrorText'])){
-				$view->setArg('inscErrorText',  $_POST['inscErrorText']);
-			}
+			$view = new InscriptionView($this, $this->args);			
 			$view->render();
 		}
 		
 		public function connection(){
 			setcookie('action', 'connection', time() + 365*24*3600, null, null, false, true);
-			$view = new ConnectionView($this);
-			if(!empty($_POST['inscErrorText'])){
-				$view->setArg('inscErrorText',  $_POST['inscErrorText']);
-			}
+			$view = new ConnectionView($this, $this->args);
 			$view->render();
 		}
 		
 		public function validateInscription($args) {
-			echo 'ETAT0 <br>';
-			$login = $_POST['inscriptionLogin'];
-			if(User::isLoginUsed($login)) {
-				echo 'ETAT1 <br>';
-				$_POST['action'] = 'inscription';
-				$_POST['inscErrorText'] = 'Ce login est déjà utilisé';
-			}else {
-				echo 'ETAT2 <br>';
-				$password = $_POST['inscriptionPassword'];
-				$mail = $_POST['inscriptionMail'];
-				$user = User::create($login, $password, $mail);
-				if(!isset($user)) {
+			if(!empty($_POST['inscriptionLogin']) && !empty($_POST['inscriptionPassword'])){
+				$login = $_POST['inscriptionLogin'];
+				if(User::isLoginUsed($login)) {
 					$_POST['action'] = 'inscription';
-					$_POST['inscErrorText'] = 'Cannot complete inscription';
-				} else {
-					echo 'a' . '<br>';
-					$newRequest = Request::getCurrentRequest();
-					echo 'b' . '<br>';
-					
-					if($login == 'root'){
-						$newRequest->write('controller', 'root');
+					$this->setArg('inscriptionLogin', $_POST['inscriptionLogin']);
+					if(!empty($_POST['inscriptionMail']))
+						$this->setArg('inscriptionMail', $_POST['inscriptionMail']);
+					$this->setArg('erreurInscriptionLogin', 'Ce login est déjà utilisé');
+					parent::execute();
+				}else {
+					$password = $_POST['inscriptionPassword'];
+					$mail = $_POST['inscriptionMail'];
+					$user = User::create($login, $password, $mail);
+					if(!isset($user)) {
+						$_POST['action'] = 'inscription';
+						$this->setArg('erreurInscription', 'Cannot complete inscription, Try later :(');
+						parent::execute();
+					} else {
+						$newRequest = Request::getCurrentRequest();
+						if($login == 'root')
+							$newRequest->write('controller', 'root');
+						else
+							$newRequest->write('controller','user');
+						$newRequest->write('login',$login);
+						$newRequest->write('password',$password);
+						$userController = Dispatcher::getCurrentDispatcher()->dispatch($newRequest);
+						$userController->execute();
 					}
-					else{
-						$newRequest->write('controller','user');
-					}
-					$newRequest->write('login',$login);
-					$newRequest->write('password',$password);
-					echo 'New controller??? '.$newRequest->getControllerName() . '<br>';
-					echo 'c' . '<br>';
-					echo 'Dans le post controller = ' . $_POST['controller'] . '<br>';
-					echo 'Dans le request controller = ' . $newRequest->getControllerName() . '<br>';
-					echo 'Dans le instance de request controller = ' . Request::getCurrentRequest()->getControllerName() . '<br>';
-					//$newRequest->write('user',$user->id());
-					//$userController = Dispatcher::getCurrentDispatcher()->dispatch($newRequest);
-					//header('Location: index.php');
-					echo 'Header ne marche pas !!!<br>';
 				}
+			} else {
+				$_POST['action'] = 'inscription';
+				$this->setArg('erreurInscription', 'Le formulaire est incomplet');
+				if(empty($_POST['inscriptionLogin']))
+					$this->setArg('erreurInscriptionLogin', 'Veuillez entrer un login');
+				else
+					$this->setArg('inscriptionLogin', $_POST['inscriptionLogin']);
+				if(empty($_POST['inscriptionPassword']))
+					$this->setArg('erreurInscriptionPassword', 'Veuillez entrer un mot de passe');
+				if(!empty($_POST['inscriptionMail']))
+					$this->setArg('inscriptionMail', $_POST['inscriptionMail']);
+				parent::execute();		
 			}
 		}
 		
 		public function validateConnection($args) {
-			echo 'ETAT0 <br>';
-			$login = $_POST['connectionLogin'];
-			if(User::isLoginUsed($login)) {
-				echo 'ETAT1 <br>';
-				$password = $_POST['connectionPassword'];
-				$user = User::tryLogin($login, $password);
-				if(!isset($user)) {
+			if(!empty($_POST['connectionLogin']) && !empty($_POST['connectionPassword'])){
+				$login = $_POST['connectionLogin'];
+				if(User::isLoginUsed($login)) {
+					$password = $_POST['connectionPassword'];
+					$user = User::tryLogin($login, $password);
+					if(!isset($user)) {
+						$_POST['action'] = 'connection';
+						$this->setArg('erreurConnectionPassword', 'Le mot de passe n\'est pas correct');
+						$this->setArg('connectionLogin', $_POST['connectionLogin']);
+						parent::execute();
+					} else {
+						$newRequest = Request::getCurrentRequest();						
+						if($login == 'root')
+							$newRequest->write('controller', 'root');
+						else
+							$newRequest->write('controller','user');
+						$newRequest->write('login',$login);
+						$newRequest->write('password',$password);
+						$userController = Dispatcher::getCurrentDispatcher()->dispatch($newRequest);
+						$userController->execute();
+					}
+				}else {
 					$_POST['action'] = 'connection';
-					$_POST['inscErrorText'] = 'Le mot de passe n\'est pas correcte';
-				} else {
-					echo 'a' . '<br>';
-					$newRequest = Request::getCurrentRequest();
-					echo 'b' . '<br>';
-					
-					if($login == 'root'){
-						$newRequest->write('controller', 'root');
-					}
-					else{
-						$newRequest->write('controller','user');
-					}
-					$newRequest->write('login',$login);
-					$newRequest->write('password',$password);
-					echo 'New controller??? '.$newRequest->getControllerName() . '<br>';
-					echo 'c' . '<br>';
-					echo 'Dans le post controller = ' . $_POST['controller'] . '<br>';
-					echo 'Dans le request controller = ' . $newRequest->getControllerName() . '<br>';
-					echo 'Dans le instance de request controller = ' . Request::getCurrentRequest()->getControllerName() . '<br>';
-					//$newRequest->write('user',$user->id());
-					//$userController = Dispatcher::getCurrentDispatcher()->dispatch($newRequest);
-					//header('Location: index.php');
-					echo 'Header ne marche pas !!!<br>';
+					$this->setArg('erreurConnection', 'Erreur connection! Veuillez vérifier le login/mot de passe');
+					$this->setArg('erreurConnectionLogin',  'Ce login n\'exite pas');
+					$this->setArg('connectionLogin',  $_POST['connectionLogin']);
+					parent::execute();
 				}
-			}else {
-				echo 'ETAT2 <br>';
+			} else {
 				$_POST['action'] = 'connection';
-				$_POST['inscErrorText'] = 'Ce login n\'existe pas';
+				if(empty($_POST['connectionLogin'])){
+					$this->setArg('erreurConnectionLogin', 'Veuillez entrer un login');
+				}else
+					$this->setArg('connectionLogin', $_POST['connectionLogin']);
+				if(empty($_POST['connectionPassword']))
+					$this->setArg('erreurConnectionPassword', 'Veuillez entrer un mot de passe');
+				parent::execute();
 			}
 		}
 	}

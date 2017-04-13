@@ -3,16 +3,11 @@
 		
 		protected static $table_name = 'USER';
 		private $login;
-		private $password;
 		private $mail;
 		private $score;
 		
 		public function login(){
 			return $this->login;
-		}
-		
-		public function password(){
-			return $this->password;
 		}
 		
 		public function mail(){
@@ -23,25 +18,12 @@
 			return $this->score;
 		}
 		
-		public function nom(){
-			return $this->nom;
-		}
-		
-		public function prenom(){
-			return $this->prenom;
-		}
-		
-		public function dateDeNaissance(){
-			return $this->dateDeNaissance;
-		}
-		
 		public static function isLoginUsed($login){
 			$isUsed = FALSE;
 			$sql = 'SELECT login FROM joueur WHERE joueur.login = \''.$login.'\'';
 			$st = parent::query($sql);
-			if($st->fetch()){
+			if($st->fetch())
 				$isUsed = TRUE;
-			}
 			return $isUsed;
 		}
 		
@@ -54,11 +36,8 @@
 		public static function tryLogin($login, $password){
 			$sql = 'SELECT * FROM joueur WHERE joueur.login = \''.$login.'\' AND joueur.password = \''.$password.'\'';
 			$st = parent::query($sql);
-			if($user = $st->fetch()){
-				echo 'recupUser<br>';
-				echo $user->login() . '<br><br>';
+			if($user = $st->fetch())
 				return $user;
-			}
 		}
 		
 		public static function getList(){

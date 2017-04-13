@@ -1,6 +1,6 @@
 			<?php
-				if(isset($connectionErrorText))
-					echo '<span class="error">' . $connectionErrorText . '</span>';
+				if(isset($erreurConnection))
+					echo '<span class=\'error\'>' . $erreurConnection . '</span>';
 			?>
 			
 			<div data-role="content">
@@ -9,11 +9,25 @@
 					<table>
 						<tr>
 							<th>Login :</th>
-							<td><input type="text" name="connectionLogin"/></td>
+							<td>
+								<input type="text" name="connectionLogin"
+									<?php if(isset($connectionLogin))
+										echo ' value="' . $connectionLogin . '"';
+									?>
+								/>
+								<?php if(isset($erreurConnectionLogin))
+									echo '<span class=\'error\'>' . $erreurConnectionLogin . '</span>';
+								?>
+							</td>
 						</tr>
 						<tr>
 							<th>Mot de passe :</th>
-							<td><input type="password" name="connectionPassword"/></td>
+							<td>
+								<input type="password" name="connectionPassword"/>
+								<?php if(isset($erreurConnectionPassword)) 
+									echo '<span class=\'error\'>' . $erreurConnectionPassword . '</span>';
+								?>
+							</td>
 						</tr>
 						<tr>
 							<th></th>
