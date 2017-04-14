@@ -11,7 +11,7 @@
 			$this->templateNames['header'] = 'header';
 			$this->templateNames['top'] = 'top';
 			$this->templateNames['menu'] = 'menu';
-			$this->templateNames['content'] = $templateName;
+			$this->templateNames['content'] = $templateName . 'Content';
 			$this->templateNames['footer'] = 'footer';
 		}
 		

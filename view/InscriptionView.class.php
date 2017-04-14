@@ -1,8 +1,8 @@
 <?php
 	class InscriptionView extends View{
 		
-		public function __construct($controller, $args = array()){
-			parent::__construct($controller, 'inscriptionContent', $args);
+		public function __construct($controller, $templateName = 'inscription', $args = array()){
+			parent::__construct($controller, $templateName, $args);
 		}		
 	}
 ?>

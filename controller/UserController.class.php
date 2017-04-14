@@ -23,7 +23,7 @@
 		}
 		
 		public function defaultAction(){
-			$view = new UserView($this, array( 'login' => $this->user->login() ));
+			$view = new UserView($this, 'user', array( 'login' => $this->user->login() ));
 			$view->render();
 		}
 		
@@ -39,7 +39,36 @@
 		}
 		
 		public function listeParties(){
-			Partie::listeParties($this->user->login());
+			$listeParties = Partie::listeParties($this->user->login());
+			foreach($listeParties as $key => $value){
+				$listeParties[$key]['listeInvites'] = $this->listeInvites($listeParties[$key]['id_partie']); 
+			}
+			$this->afficherListeParties($listeParties);
+		}
+		
+		public function listePartiesEnCours(){
+			$listeParties = Partie::listeParties($this->user->login(), NULL, 0);
+			foreach($listeParties as $key => $value){
+				$listeParties[$key]['listeInvites'] = $this->listeInvites($listeParties[$key]['id_partie']); 
+			}
+			$this->afficherListeParties($listeParties);
+		}
+		
+		public function listePartiesTerminee(){
+			$listeParties = Partie::listeParties($this->user->login(), 1, 1);
+			foreach($listeParties as $key => $value){
+				$listeParties[$key]['listeInvites'] = $this->listeInvites($listeParties[$key]['id_partie']); 
+			}
+			$this->afficherListeParties($listeParties);
+		}
+		
+		public function listeInvites($id_partie){
+			return User::listeInvites($id_partie);
+		}
+		
+		public function afficherListeParties($listeParties){
+			$view = new UserView($this, 'userParties', array( 'login' => $this->user->login(), 'listeParties' => $listeParties));
+			$view->render();
 		}
 	}
 ?>

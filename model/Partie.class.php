@@ -2,52 +2,54 @@
 	class Partie extends Model{
 		
 		protected $id_partie;
-		protected $createur;
-		protected $nombreJoueur;
-		protected $estCommencee;
-		protected $estTreminee;
-		protected $public;
-		protected $dateDeCreation;
+		protected $id_createur;
+		protected $nombre_joueurs;
+		protected $est_commencee;
+		protected $est_terminee;
+		protected $est_public;
+		protected $date_creation;
 		
-		public function id(){ return $this->id_partie; }
+		public function id_partie(){ return $this->id_partie; }
 		
-		public function createur(){ return $this->createur; }
+		public function id_createur(){ return $this->id_createur; }
 		
-		public function nombreJoueur(){ return $this->nombreJoueur; }
+		public function nombre_joueurs(){ return $this->nombre_joueurs; }
 		
-		public function estCommencee(){ return $this->estCommencee; }
+		public function est_commencee(){ return $this->est_commencee; }
 		
-		public function estTerminee(){ return $this->estTerminee; }
+		public function est_terminee(){ return $this->est_terminee; }
 		
-		public function estPublic(){ return $this->estPublic; }
+		public function est_public(){ return $this->est_public; }
 		
-		public function dateDeCreation(){ return $this->dateDeCreation; }
+		public function date_creation(){ return $this->date_creation; }
 		
-		public static function creerPartie($login, $nombreJoueurs = 2){
+		public static function creerPartie($login, $nombreJoueurs = 2, $est_public = 1){
 			date_default_timezone_set('Europe/Paris');
 			$sql = 'INSERT INTO `partie` 
-				(`ID_PARTIE`, `ID_CREATEUR`, `NB_JOUEURS`, `EST_COMMENCEE`, `PUBLIC`, `EST_TERMINEE`, `DATE_CREATION`) 
-				VALUES (NULL, \''. $login .'\', \''. $nombreJoueurs .'\', 0, 1, 0, \''. date("Y\-m\-j") .'\')';
+				(`id_partie`, `id_createur`, `nombre_joueurs`, `est_commencee`, `est_terminee`, `est_public`, `date_creation`) 
+				VALUES (NULL, \''. $login .'\', \''. $nombreJoueurs .'\', 0, 0, \'' . $est_public .'\', \''. date("Y\-m\-j") .'\')';
 			$sth = parent::query($sql);
 		}
 		
-		public static function listeParties($login){
-			$sql = 'SELECT * FROM partie WHERE partie.ID_CREATEUR = \'' . $login .'\'';
+		public static function listeParties($login, $est_commencee = NULL, $est_terminee = NULL, $est_public = NULL){
+			$sql = 'SELECT * FROM partie WHERE partie.id_createur = \'' . $login .'\'';
+			if(!is_null($est_commencee))
+				$sql = $sql . ' AND partie.est_commencee = \'' . $est_commencee . '\'';
+			if(!is_null($est_terminee))
+				$sql = $sql . ' AND partie.est_terminee = \'' . $est_terminee . '\'';
+			if(!is_null($est_public))
+				$sql = $sql . ' AND partie.est_public = \'' . $est_public . '\'';
 			$sth = parent::query($sql);
 			$listeParties = array();
 			while($partie = $sth->fetch()){
-				echo $partie->id . '<br>';
-				$listeParties['partie'.$partie->id()] = array (
-					'id' => $partie->id(),
-					'createur' => $partie->createur(),
-					'nombreJoueur' => $partie->nombreJoueur(),
-					'estCommencee' => $partie->estCommencee(),
-					//'estTerminee' => $partie->estTerminee(),
-					//'estPublic' => $partie->estPublic(),
-					'dateDeCreation' => $partie->dateDeCreation());
-			}
-			foreach($listeParties as $key => $value){
-				echo $key . '<br>';
+				$listeParties['partie'.$partie->id_partie()] = array (
+					'id_partie' => $partie->id_partie(),
+					'id_createur' => $partie->id_createur(),
+					'nombre_joueurs' => $partie->nombre_joueurs(),
+					'est_commencee' => $partie->est_commencee(),
+					'est_terminee' => $partie->est_terminee(),
+					'est_public' => $partie->est_public(),
+					'date_creation' => $partie->date_creation());
 			}
 			return $listeParties;
 		}

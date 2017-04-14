@@ -16,19 +16,19 @@
 		}
 		
 		public function defaultAction(){
-			$view = new AnonymousView($this, $_POST);
+			$view = new AnonymousView($this);
 			$view->render();
 		}
 		
 		public function inscription(){
 			$_SESSION['action'] = 'inscription';
-			$view = new InscriptionView($this, $this->args);			
+			$view = new InscriptionView($this, 'inscription', $this->args);			
 			$view->render();
 		}
 		
 		public function connection(){
 			$_SESSION['action'] = 'connection';
-			$view = new ConnectionView($this, $this->args);
+			$view = new ConnectionView($this, 'connection', $this->args);
 			$view->render();
 		}
 		

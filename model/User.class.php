@@ -57,5 +57,23 @@
 		public function isSuperAdmin(){
 			return $this->role()->isSuperAdmin();
 		}
+		
+		public static function listeInvites($id_partie){
+			$sql = 'SELECT login 
+					FROM joueur 
+					WHERE joueur.login IN (
+						SELECT login 
+						FROM est_invite_a
+						WHERE est_invite_a.id_partie = \'' . $id_partie .'\'
+						)';
+			$sth = parent::query($sql);
+			$listeInvites = array();
+			$numInvite = 0;
+			while($invite = $sth->fetch()){
+				$numInvite++;
+				$listeInvites['invite'.$numInvite] = $invite->login();
+			}
+			return $listeInvites;
+		}
 	}
 ?>

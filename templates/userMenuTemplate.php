@@ -1,6 +1,10 @@
 		<div data-position="fixed">
 			<h1>Menu</h1>
 			<button><a href="index.php?action=home">Home</a></button>
-			<button><a href="index.php?action=creerPartie">Creer Partie</a></button>
-			<button><a href="index.php?action=listeParties">Mes Parties</a></button>
+			<button><a href="index.php?action=creerPartie">Creer partie</a></button>
+			<button><a href="index.php?action=listeParties">Mes parties</a></button>
+			<button><a href="index.php?action=listePartiesEnCours">Mes parties en cours</a></button>
+			<button><a href="index.php?action=listePartiesTerminee">Mes parties terminée</a></button>
+			<button><a href="index.php?action=deconnection">Deconnection</a></button>
+			
 		</div>
