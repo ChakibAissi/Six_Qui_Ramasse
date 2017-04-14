@@ -63,7 +63,7 @@
 			foreach($listeParties as $key => $value){
 				$listeParties[$key]['listeInvites'] = $this->listeInvites($listeParties[$key]['id_partie']); 
 			}
-			$this->afficherListeParties($listeParties);
+			$this->afficherListeParties($listeParties, 'Rejoindre');
 		}
 		
 		public function listePartiesEnAttente(){
@@ -71,7 +71,7 @@
 			foreach($listeParties as $key => $value){
 				$listeParties[$key]['listeInvites'] = $this->listeInvites($listeParties[$key]['id_partie']); 
 			}
-			$this->afficherListeParties($listeParties);
+			$this->afficherListeParties($listeParties, 'Acceder à la partie');
 		}
 		
 		public function listePartiesEnCours(){
@@ -79,7 +79,7 @@
 			foreach($listeParties as $key => $value){
 				$listeParties[$key]['listeInvites'] = $this->listeInvites($listeParties[$key]['id_partie']); 
 			}
-			$this->afficherListeParties($listeParties);
+			$this->afficherListeParties($listeParties, 'Continuer');
 		}
 		
 		public function listePartiesTerminee(){
@@ -94,9 +94,17 @@
 			return User::listeInvites($id_partie);
 		}
 		
-		public function afficherListeParties($listeParties){
-			$view = new UserView($this, 'userParties', array( 'login' => $this->user->login(), 'listeParties' => $listeParties));
+		public function afficherListeParties($listeParties, $rejoindrePartieTexte = ''){
+			$view = new UserView($this, 'userParties', array( 'login' => $this->user->login(), 'listeParties' => $listeParties, 'rejoindrePartie' => $rejoindrePartieTexte));
 			$view->render();
+		}
+		
+		public function listePartiesDisponibles(){
+			$listeParties = Partie::listePartiesDisponibles($this->user->login());
+			foreach($listeParties as $key => $value){
+				$listeParties[$key]['listeInvites'] = $this->listeInvites($listeParties[$key]['id_partie']); 
+			}
+			$this->afficherListeParties($listeParties, 'Rejoindre');
 		}
 		
 		public function rejoindrePartie(){

@@ -16,8 +16,8 @@
 			$view->render();
 		}
 		
-		public function afficherListeParties($listeParties){
-			$view = new RootView($this, 'userParties', array( 'login' => $this->user->login(), 'listeParties' => $listeParties));
+		public function afficherListeParties($listeParties, $rejoindrePartieTexte = ''){
+			$view = new RootView($this, 'userParties', array( 'login' => $this->user->login(), 'listeParties' => $listeParties, 'rejoindrePartie' => $rejoindrePartieTexte));
 			$view->render();
 		}
 	}

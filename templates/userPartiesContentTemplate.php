@@ -1,6 +1,5 @@
 			<div data-role="content">
 				<h1>UserContent</h1>
-				<h5>Login : <?php echo $login ?></h5>
 				<h3>ListePartie</h3>
 				<table>
 					<tr>
@@ -12,6 +11,7 @@
 						<th>partie public</th>
 						<th>date de creation</th>
 						<th>Participants</th>
+						<th></th>
 					</tr>
 					<?php
 						if(isset($listeParties)){
@@ -30,11 +30,15 @@
 											echo $listeParties[$key]['listeInvites'][$key2] . '<br>';
 										}
 									}else {
-										echo 'no one';
+										echo 'Aucun participant';
 									}
-									echo '</td>';
-									
-								echo '</tr>';
+									echo '</td><td>';
+									if($listeParties[$key]['est_terminee'] == '0'){
+										echo '<button><a href="index.php?action=rejoindrePartie">' . $rejoindrePartie . '</a></button>';
+									}else {
+										echo 'Terminée';
+									}
+								echo '</td></tr>';
 							}
 						}
 					?>
