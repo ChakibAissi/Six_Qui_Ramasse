@@ -6,10 +6,9 @@
 		}
 
 		public function execute(){
-			$action = $this->request->getActionName();
-			if($action == 'inscription')
+			if(isset($_POST['inscription']))
 				$this->validateInscription();
-			else if($action == 'connection')
+			else if(isset($_POST['connection']))
 				$this->validateConnection();
 			else
 				parent::execute();

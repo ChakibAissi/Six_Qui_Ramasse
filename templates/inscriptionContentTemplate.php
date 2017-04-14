@@ -31,7 +31,7 @@
 						<tr>
 							<th>Mail :</th>
 							<td>
-								<input type="test" name="inscriptionMail"
+								<input type="email" name="inscriptionMail"
 									<?php if(isset($inscriptionMail))
 										echo ' value="' . $inscriptionMail . '"';
 									?>
@@ -40,7 +40,7 @@
 						</tr>
 						<tr>
 							<th></th>
-							<td><input type="submit" name="Creer mon compte..."/></td>
+							<td><input type="submit" name="inscription" value="Creer un compte"/></td>
 						</tr>
 					</table>
 				</form>

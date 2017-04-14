@@ -20,7 +20,6 @@
 		
 		public function home(){
 			$this->request->initAction();
-
 			header('Location: index.php');
 		}
 	}

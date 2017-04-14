@@ -10,6 +10,12 @@
 			$view->render();
 		}
 		
+		public function creerPartie(){
+			$_SESSION['action'] = 'creerPartie';
+			$view = new RootView($this, 'formulairePartie', array( 'login' => $this->user->login()));			
+			$view->render();
+		}
+		
 		public function afficherListeParties($listeParties){
 			$view = new RootView($this, 'userParties', array( 'login' => $this->user->login(), 'listeParties' => $listeParties));
 			$view->render();

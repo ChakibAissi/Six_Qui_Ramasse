@@ -43,10 +43,10 @@
 		public function getActionName(){
 			if(isset($_GET['action']))
 				Request::$uniqueInstance->actionName = $_GET['action'];
-			else if(isset($_POST['action']))
-				Request::$uniqueInstance->actionName = $_POST['action'];
 			else if(isset($_SESSION['action']))
 				Request::$uniqueInstance->actionName = $_SESSION['action'];
+			else if(isset($_POST['action']))
+				Request::$uniqueInstance->actionName = $_POST['action'];
 			else if(isset($_COOKIE['action']))
 				Request::$uniqueInstance->actionName = $_COOKIE['action'];
 			return Request::$uniqueInstance->actionName;
