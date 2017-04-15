@@ -12,6 +12,7 @@
 						<th>date de creation</th>
 						<th>Participants</th>
 						<th></th>
+						<?php if(isset($peutInviter)) echo '<th></th>';?>
 					</tr>
 					<?php
 						if(isset($listeParties)){
@@ -29,16 +30,25 @@
 										foreach($listeParties[$key]['listeInvites'] as $key2 => $value2){
 											echo $listeParties[$key]['listeInvites'][$key2] . '<br>';
 										}
-									}else {
+									}else
 										echo 'Aucun participant';
-									}
 									echo '</td><td>';
-									if($listeParties[$key]['est_terminee'] == '0'){
-										echo '<button><a href="index.php?action=rejoindrePartie">' . $rejoindrePartie . '</a></button>';
-									}else {
+									if($listeParties[$key]['est_terminee'] == '0')
+										echo '<button><a href="index.php?action=rejoindrePartie&amp;idPartie='.$listeParties[$key]['id_partie'].'">' . $rejoindrePartie . '</a></button>';
+									else
 										echo 'Terminée';
+									echo '</td>';
+									if(isset($peutInviter)){
+										if($peutInviter){
+											echo '<td>';
+											if(!$listeParties[$key]['complet'] && $listeParties[$key]['est_terminee'] == '0')
+													echo '<button><a href="index.php?action=invitation&amp;idPartie='.$listeParties[$key]['id_partie'].'">Inviter</a></button>';
+											else
+												echo 'complet';
+											echo '</td>';
+										}
 									}
-								echo '</td></tr>';
+								echo '</tr>';
 							}
 						}
 					?>
