@@ -9,12 +9,13 @@
 		}
 		
 		public function execute(){
-			if(!empty($_SESSION['login']) && !empty($_SESSION['password'])){
+			if(!empty($_SESSION['login']) && !empty($_SESSION['password']))
 				$this->user = User::tryLogin($_SESSION['login'], $_SESSION['password']);
-			}else if(!empty($_POST['login']) && !empty($_POST['password'])){
+			else if(!empty($_POST['login']) && !empty($_POST['password'])){
 				$this->user = User::tryLogin($_POST['login'], $_POST['password']);	
 				$_SESSION['user'] = $this->user;
 				$_SESSION['login'] = $_POST['login'];
+				$_SESSION['password'] = $_POST['password'];
 			}
 			else
 				$this->setArg('erreurUser', 'Impossible de récuperer l\'utilisateur dans la base de données');
@@ -23,11 +24,12 @@
 			}
 			else if(isset($_POST['invitation']))
 				$this->validateInvitation();
+			echo $this->user->login();
 			parent::execute();
 		}
 		
 		public function defaultAction(){
-			$view = new UserView($this, 'user', array( 'login' => $this->user->login() ));
+			$view = new UserView($this, 'user', array( 'login' => $this->user->login()));
 			$view->render();
 		}
 		
@@ -78,7 +80,6 @@
 				$this->setArg('infoUserContent', 'La partie est complete!!!');
 				unset($_POST['invitationLogin']);
 				unset($_POST['invitation']);
-				$this->request->initAction();
 			}
 			else{
 				if(!empty($_POST['invitationLogin'])){
@@ -93,7 +94,6 @@
 						}
 						unset($_POST['invitationLogin']);
 						unset($_POST['invitation']);
-						$this->request->initAction();
 					}else {
 						$_POST['action'] = 'invitation';
 						$this->setArg('erreurInvitationLogin',  'Ce login n\'exite pas');
