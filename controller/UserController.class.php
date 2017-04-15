@@ -24,7 +24,6 @@
 			}
 			else if(isset($_POST['invitation']))
 				$this->validateInvitation();
-			echo $this->user->login();
 			parent::execute();
 		}
 		
