@@ -19,13 +19,12 @@
 				$cheminFichier = __ROOT_DIR . '/' . $dossier . '/' . ucfirst($className) . '.class.php';
 				if(is_readable($cheminFichier)){
 					require_once($cheminFichier);
+					$cheminFichier2 = __ROOT_DIR . '/sql/' . ucfirst($className) . '.sql.php';
+					if(is_readable($cheminFichier2)){
+						require_once($cheminFichier2);
+					}
 				}
-			}
-			
-			$cheminFichier = __ROOT_DIR . '/sql/' . ucfirst($className) . '.sql.php';
-			if(is_readable($cheminFichier)){
-				require_once($cheminFichier);
-			}				
+			}							
 		}
 	}
 	

@@ -34,7 +34,7 @@
 										echo 'Aucun participant';
 									echo '</td><td>';
 									if($listeParties[$key]['est_terminee'] == '0')
-										echo '<button><a href="index.php?action=rejoindrePartie&amp;idPartie='.$listeParties[$key]['id_partie'].'">' . $rejoindrePartie . '</a></button>';
+										echo '<button><a href="index.php?action=' . $actionBouton . '&amp;idPartie='.$listeParties[$key]['id_partie'].'">' . $rejoindrePartie . '</a></button>';
 									else
 										echo 'Terminée';
 									echo '</td>';

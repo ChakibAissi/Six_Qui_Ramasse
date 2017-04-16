@@ -6,6 +6,7 @@
 			<button><a href="index.php?action=listePartiesEnAttente">Mes parties en attente</a></button>
 			<button><a href="index.php?action=listePartiesEnCours">Mes parties en cours</a></button>
 			<button><a href="index.php?action=listePartiesTerminee">Mes parties terminée</a></button>
-			<button><a href="index.php?action=listePartiesDisponibles">Rejoindre Partie</a></button>
+			<button><a href="index.php?action=listePartiesDisponibles">Rejoindre partie</a></button>
+			<button><a href="index.php?action=listeInvitations">Mes invitations</a></button>
 			<button><a href="index.php?action=deconnection">Deconnection</a></button>
 		</div>

@@ -23,12 +23,14 @@
 		
 		public function date_creation(){ return $this->date_creation; }
 		
-		public static function creerPartie($login, $nombreJoueurs = 2, $est_public = 1){
+		public static function creerPartie($login, $nombre_joueurs = 2, $est_public = 1){
 			date_default_timezone_set('Europe/Paris');
 			$sql = 'INSERT INTO `partie` 
 				(`id_partie`, `id_createur`, `nombre_joueurs`, `est_commencee`, `est_terminee`, `est_public`, `date_creation`) 
-				VALUES (NULL, \''. $login .'\', \''. $nombreJoueurs .'\', 0, 0, \'' . $est_public .'\', \''. date("Y\-m\-j") .'\')';
+				VALUES (NULL, \''. $login .'\', \''. $nombre_joueurs .'\', 0, 0, \'' . $est_public .'\', \''. date("Y\-m\-j") .'\')';
 			$sth = parent::query($sql);
+			//$sth = parent::execution('PARTIE_CREATE', array( ':login' => $login, ':nombre_joueurs' => $nombre_joueurs, ':est_public' => $est_public, ':date)' => date("Y\-m\-j")));
+			//$sth->closeCursor();
 		}
 		
 		public static function recupPartieFromSql($sth){
@@ -43,6 +45,7 @@
 					'est_public' => $partie->est_public(),
 					'date_creation' => $partie->date_creation());
 			}
+			//$sth->closeCursor();
 			return $listeParties;
 		}
 		
@@ -66,18 +69,32 @@
 				AND p.est_terminee =  \'0\'
 				AND p.est_public =  \'1\'
 				AND p.nombre_joueurs -1 > (
-					SELECT COUNT(e.login)
-					FROM est_invite_a e
-					WHERE e.id_partie = p.id_partie)
+					SELECT COUNT(j.login)
+					FROM joue j
+					WHERE j.id_partie = p.id_partie)
 				AND \'' . $login . '\' NOT IN (
 					SELECT login 
 					FROM joueur 
 					WHERE joueur.login IN (
 						SELECT login 
-						FROM est_invite_a
-						WHERE est_invite_a.id_partie = p.id_partie
-						AND est_invite_a.login = \'' . $login . '\'))';
+						FROM joue j2
+						WHERE j2.id_partie = p.id_partie
+						AND j2.login = \'' . $login . '\'))';
 			$sth = parent::query($sql);
+			//$sth = parent::execution('PARTIE_DISPONIBLES', array( ':login' => $login));
+			return Partie::recupPartieFromSql($sth);
+		}
+		
+		public static function listeInvitations($login){
+			$sql = 'SELECT id_partie, id_createur,  nombre_joueurs, est_commencee, est_terminee, est_public, date_creation
+				FROM partie p
+				WHERE p.id_partie IN (
+					SELECT e.id_partie
+					FROM est_invite_a e
+					WHERE e.login = \'' . $login . '\')';
+			$sth = parent::query($sql);
+			//$sth = parent::execution('PARTIE_INVITATIONS', array( ':login' => $login, ':id_partie' => $idPartie));
+			//$sth->closeCursor();
 			return Partie::recupPartieFromSql($sth);
 		}
 		
@@ -87,19 +104,27 @@
 				WHERE partie.id_partie = \'' . $idPartie . '\'
 				AND partie.id_createur = \'' . $login . '\'';
 			$sth = parent::query($sql);
-			if($sth->fetch())
+			//$sth = parent::execution('PARTIE_EST_CREATEUR', array( ':login' => $login, ':id_partie' => $idPartie));
+			if($sth->fetch()){
+				//$sth->closeCursor();
 				return true;
+			}
+			//$sth->closeCursor();
 			return false;
 		}
 		
 		public static function estParticipant($login, $idPartie){
 			$sql = 'SELECT login
-				FROM est_invite_a e
-				WHERE e.id_partie = \'' . $idPartie . '\'
-				AND e.login = \'' . $login . '\'';
+				FROM joue j
+				WHERE j.id_partie = \'' . $idPartie . '\'
+				AND j.login = \'' . $login . '\'';
 			$sth = parent::query($sql);
-			if($sth->fetch())
+			//$sth = parent::execution('PARTIE_PARTICIPE', array( ':login' => $login, ':id_partie' => $idPartie));
+			if($sth->fetch()){
+				//$sth->closeCursor();
 				return true;
+			}
+			//$sth->closeCursor();
 			return false;
 		}
 		
@@ -108,12 +133,16 @@
 				FROM partie p
 				WHERE p.id_partie = \'' . $idPartie . '\'
 				AND p.nombre_joueurs -1 = (
-					SELECT COUNT(e.login)
-					FROM est_invite_a e
-					WHERE e.id_partie = p.id_partie)';
+					SELECT COUNT(j.login)
+					FROM joue j
+					WHERE j.id_partie = p.id_partie)';
 			$sth = parent::query($sql);
-			if($sth->fetch())
+			//$sth = parent::execution('PARTIE_COMPLET', array( ':id_partie' => $idPartie));
+			if($sth->fetch()){
+				//$sth->closeCursor();
 				return true;
+			}
+			//$sth->closeCursor();
 			return false;
 		}
 		
@@ -122,6 +151,23 @@
 				(`login`, `id_partie`) VALUES 
 				(\'' . $login . '\', \''. $idPartie .'\')';
 			$sth = parent::query($sql);
+			//$sth = parent::execution('PARTIE_INVITER', array( ':login' => $login, ':id_partie' => $idPartie));
+			//$sth->closeCursor();
+		}
+		
+		public static function estInvite($login, $idPartie){
+			$sql = 'SELECT login 
+				FROM est_invite_a e
+				WHERE e.login = \'' . $login . '\'
+				AND e.id_partie = \'' . $idPartie . '\'';
+			$sth = parent::query($sql);
+			//$sth = parent::execution('PARTIE_EST_INVITE', array( ':login' => $login, ':id_partie' => $idPartie));
+			if($sth->fetch()){
+				//$sth->closeCursor();
+				return true;
+			}
+			//$sth->closeCursor();
+			return false;
 		}
 	}
 ?>

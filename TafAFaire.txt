@@ -5,7 +5,8 @@ git pull --rebase
 git push
 
 A faire en priorité
--invitation.
+-invitation sur la page creer partie.
+-mes partie en attentes afficher les parties dont je participe et dont je ne suis pas le createur
 -jouer(programmation, calcul des scores, mouvement des cartes, position des joueurs sur l'écran, fin de partie, animation victoire/défaite).
 -design du site.
 -design des cartes.
@@ -13,6 +14,11 @@ A faire en priorité
 
 
 A faire s'il y a du temps
+-menu déroulant listes parties.
+-partie en cours enlever 'complet'.
+-partie terminée enlever 'Teminée' et 'complet'.
+-inviter plusieurs personnes directement.
+-regle du jeu
 -changer le code permettant d'obtenir le controller user (ne pas modifier le dispatcher mais la fonction execute).
 -pour l'inscription revenir sur la page si toutes les données obligatoire ne sont pas entré(en mettant en rouge ceux les champ manquant)
 -idem pour la connection si le mot de passe est incorrecte ou le login inexistant.

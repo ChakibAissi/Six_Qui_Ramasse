@@ -56,6 +56,21 @@
 			$view->render();
 		}
 		
+		public function accepterInvitation(){
+			if(isset($_GET['idPartie'])){
+				echo $_GET['idPartie'];
+				if(!Partie::estParticipant($this->user->login(), $_GET['idPartie'])){
+					User::accepterInvitation($this->user->login(), $_GET['idPartie'], 0);
+					if(Partie::estParticipant($this->user->login(), $_GET['idPartie']))
+						User::supprimerInvitation($this->user->login(), $_GET['idPartie']);	
+				} else{
+					
+				}
+			}
+			$this->request->initAction();
+			header('Location: index.php');			
+		}
+		
 		public function validateCreerPartie(){
 			if(!empty($_POST['creationPartieNombreJoueurs'])){
 				$nombreJoueurs = $_POST['creationPartieNombreJoueurs'];
@@ -73,34 +88,38 @@
 		}
 		
 		public function validateInvitation() {
-			echo 'Validate Partie <br>';
-			if(Partie::estComplet($_SESSION['invitationNumeroPartie'])){
-				echo 'Complet<br>';
-				$this->setArg('infoUserContent', 'La partie est complete!!!');
-				unset($_POST['invitationLogin']);
-				unset($_POST['invitation']);
+			if(Partie::estInvite($_POST['invitationLogin'], $_SESSION['invitationNumeroPartie'])){
+				$this->setArg('erreurInvitationLogin', 'Une invitation a déjà été envoyer!!!');
 			}
 			else{
-				if(!empty($_POST['invitationLogin'])){
-					$login = $_POST['invitationLogin'];
-					if($login == $_SESSION['login'])
-						$this->setArg('erreurInvitationLogin',  'Vous participez déjà à la partie!!!');
-					else if(User::isLoginUsed($login)) {
-						if(Partie::estParticipant($login, $_SESSION['invitationNumeroPartie']))
-							$this->setArg('erreurInvitationLogin',  'Ce joueur participe déjà à la partie!!!');
-						else{
-							Partie::inviter($login, $_SESSION['invitationNumeroPartie']);
+				if(Partie::estComplet($_SESSION['invitationNumeroPartie'])){
+					echo 'Complet<br>';
+					$this->setArg('infoUserContent', 'La partie est complete!!!');
+					unset($_POST['invitationLogin']);
+					unset($_POST['invitation']);
+				}
+				else{
+					if(!empty($_POST['invitationLogin'])){
+						$login = $_POST['invitationLogin'];
+						if($login == $_SESSION['login'])
+							$this->setArg('erreurInvitationLogin',  'Vous êtes le créateur de la partie!!! Vous n\'avez pas besoin de vous inviter à la partie');
+						else if(User::isLoginUsed($login)) {
+							if(Partie::estParticipant($login, $_SESSION['invitationNumeroPartie']))
+								$this->setArg('erreurInvitationLogin',  'Ce joueur participe déjà à la partie!!!');
+							else{
+								Partie::inviter($login, $_SESSION['invitationNumeroPartie']);
+							}
+							unset($_POST['invitationLogin']);
+							unset($_POST['invitation']);
+						}else {
+							$_POST['action'] = 'invitation';
+							$this->setArg('erreurInvitationLogin',  'Ce login n\'exite pas');
+							$this->setArg('connectionLogin',  $login);
 						}
-						unset($_POST['invitationLogin']);
-						unset($_POST['invitation']);
-					}else {
+					} else {
 						$_POST['action'] = 'invitation';
-						$this->setArg('erreurInvitationLogin',  'Ce login n\'exite pas');
-						$this->setArg('connectionLogin',  $login);
+						$this->setArg('erreurInvitationLogin', 'Veuillez entrer un login');
 					}
-				} else {
-					$_POST['action'] = 'invitation';
-					$this->setArg('erreurInvitationLogin', 'Veuillez entrer un login');
 				}
 			}
 		}
@@ -109,14 +128,14 @@
 		public function listeParties(){
 			$listeParties = Partie::listeParties($this->user->login());
 			$listeParties = $this->infoListePartie($listeParties);
-			$this->afficherListeParties($listeParties, 'Rejoindre', true);
+			$this->afficherListeParties($listeParties, 'Rejoindre', 'WAIT', true);
 		}
 		
 		//Toutes les parties non commencées de l'ulisateur 
 		public function listePartiesEnAttente(){
 			$listeParties = Partie::listeParties($this->user->login(), 0, 0);
 			$listeParties = $this->infoListePartie($listeParties);
-			$this->afficherListeParties($listeParties, 'Acceder à la partie', true);
+			$this->afficherListeParties($listeParties, 'Acceder à la partie', 'WAIT', true);
 		}
 		
 		//Toutes les parties commencées mais non terminées de l'ulisateur 
@@ -129,7 +148,7 @@
 		//Toutes les parties terminées de l'ulisateur 
 		public function listePartiesTerminee(){
 			$listeParties = Partie::listeParties($this->user->login(), 1, 1);
-			$listeParties = $this->infoListePartie($listeParties, false);
+			$listeParties = $this->infoListePartie($listeParties);
 			$this->afficherListeParties($listeParties, '');
 		}
 		
@@ -137,19 +156,8 @@
 			return User::listeInvites($id_partie);
 		}
 		
-		public function infoListePartie($listeParties){
-			foreach($listeParties as $key => $value){
-				$listeParties[$key]['listeInvites'] = $this->listeInvites($listeParties[$key]['id_partie']);
-				$listeParties[$key]['complet'] =false;
-				if(Partie::estComplet($listeParties[$key]['id_partie']))
-					$listeParties[$key]['complet'] = true;					
-			}
-			return $listeParties;
-		}
-		
-		public function afficherListeParties($listeParties, $rejoindrePartieTexte = '', $peutInviter = false){
-			$view = new UserView($this, 'userParties', array( 'login' => $this->user->login(), 'listeParties' => $listeParties, 'rejoindrePartie' => $rejoindrePartieTexte, 'peutInviter' => $peutInviter));
-			$view->render();
+		public function listeParticipants($id_partie){
+			return User::listeParticipants($id_partie);
 		}
 		
 		//Toutes les parties que l'utilisateur peut rejoindre 
@@ -157,6 +165,28 @@
 			$listeParties = Partie::listePartiesDisponibles($this->user->login());
 			$listeParties = $this->infoListePartie($listeParties);
 			$this->afficherListeParties($listeParties, 'Rejoindre');
+		}
+		
+		
+		public function listeInvitations(){
+			$listeParties = Partie::listeInvitations($this->user->login());
+			$listeParties = $this->infoListePartie($listeParties);
+			$this->afficherListeParties($listeParties, 'Accepter l\'invitation', 'accepterInvitation');
+		}
+		
+		public function infoListePartie($listeParties){
+			foreach($listeParties as $key => $value){
+				$listeParties[$key]['listeInvites'] = $this->listeParticipants($listeParties[$key]['id_partie']);
+				$listeParties[$key]['complet'] =false;
+				if(Partie::estComplet($listeParties[$key]['id_partie']))
+					$listeParties[$key]['complet'] = true;					
+			}
+			return $listeParties;
+		}
+		
+		public function afficherListeParties($listeParties, $rejoindrePartieTexte = '', $actionBouton = 'rejoindrePartie', $peutInviter = false){
+			$view = new UserView($this, 'userParties', array( 'login' => $this->user->login(), 'listeParties' => $listeParties, 'rejoindrePartie' => $rejoindrePartieTexte, 'actionBouton' => $actionBouton, 'peutInviter' => $peutInviter));
+			$view->render();
 		}
 		
 		public function rejoindrePartie(){
