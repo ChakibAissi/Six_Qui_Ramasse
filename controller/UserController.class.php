@@ -5,20 +5,23 @@
 		
 		public function __construct($request){
 			parent::__construct($request);
-			$_SESSION['controller'] = 'user';
-		}
-		
-		public function execute(){
-			if(!empty($_SESSION['login']) && !empty($_SESSION['password']))
+			if(!empty($_SESSION['login']) && !empty($_SESSION['password'])){
 				$this->user = User::tryLogin($_SESSION['login'], $_SESSION['password']);
-			else if(!empty($_POST['login']) && !empty($_POST['password'])){
+				$this->setArg('login', $this->user->login());
+			}else if(!empty($_POST['login']) && !empty($_POST['password'])){
 				$this->user = User::tryLogin($_POST['login'], $_POST['password']);	
+				$this->setArg('login', $this->user->login());
 				$_SESSION['user'] = $this->user;
 				$_SESSION['login'] = $_POST['login'];
 				$_SESSION['password'] = $_POST['password'];
 			}
 			else
 				$this->setArg('erreurUser', 'Impossible de récuperer l\'utilisateur dans la base de données');
+			$_SESSION['controller'] = 'user';
+			echo $this->request->getControllerName() . '-' . $this->request->getActionName() . '<br>';
+		}
+		
+		public function execute(){
 			if(isset($_POST['creationPartie'])){
 				$this->validateCreerPartie();
 			}
@@ -55,20 +58,113 @@
 			$view = new InvitationView($this, 'invitation', $this->args);
 			$view->render();
 		}
+
+		
+		public function jouerPartie(){
+			if(isset($_SESSION['jouer']) && isset($_SESSION['idPartieEnCours'])){
+				$this->request->initAction();
+				$_SESSION['controller'] = 'joueur';
+				//$joueurController = Dispatcher::getCurrentDispatcher()->dispatch($this->request);
+				//$joueurController->execute();
+				header('Location: index.php');
+			}
+			else{
+				echo 'NON';
+				$this->request->initAction();
+				header('Location: index.php');
+			}
+		}
+		
+		public function demarrerPartie(){
+			if(isset($_GET['action']))
+				$_SESSION['action'] = 'demarrerPartie';
+			if(isset($_GET['idPartie'])){
+				$_SESSION['idPartieEnCours'] = $_GET['idPartie'];
+			}
+			if(isset($_SESSION['action']) && isset($_SESSION['idPartieEnCours'])){
+				echo 'ETAT1<br>';
+				if($_SESSION['action'] == 'demarrerPartie'){//rajouter vérification de la partie
+					echo 'ETAT2<br>';
+					if(Partie::estEnAttente($_SESSION['idPartieEnCours'])){
+						echo 'ETAT3<br>';
+						if(Partie::estComplet($_SESSION['idPartieEnCours'])){
+							echo 'ETAT4<br>';
+							Partie::demarerPartie($_SESSION['idPartieEnCours']);
+						}$_SESSION['jouer'] = 'jeu en cours';
+						$this->request->initAction();
+						$_SESSION['action'] = 'rejoindrePartie';
+						parent::execute();
+					}
+				}
+			}
+			else{
+				$this->request->initAction();
+				parent::execute();
+			}
+		}
+		
+		public function continuerPartie(){
+			if(isset($_GET['action']))
+				$_SESSION['action'] = 'continuerPartie';
+			if(isset($_GET['idPartie'])){
+				$_SESSION['idPartieEnCours'] = $_GET['idPartie'];
+			}
+			if(isset($_SESSION['action']) && isset($_SESSION['idPartieEnCours'])){
+				if($_SESSION['action'] == 'continuerPartie'){//rajouter vérification de la partie
+						$_SESSION['jouer'] = 'jeu en cours';
+						$this->request->initAction();
+						$_SESSION['action'] = 'jouerPartie';
+						parent::execute();
+				}
+			}else{
+				$this->request->initAction();
+				parent::execute();
+			}
+		}
 		
 		public function accepterInvitation(){
+			$this->request->initAction();
 			if(isset($_GET['idPartie'])){
 				echo $_GET['idPartie'];
 				if(!Partie::estParticipant($this->user->login(), $_GET['idPartie'])){
-					User::accepterInvitation($this->user->login(), $_GET['idPartie'], 0);
-					if(Partie::estParticipant($this->user->login(), $_GET['idPartie']))
-						User::supprimerInvitation($this->user->login(), $_GET['idPartie']);	
-				} else{
-					
+					User::accepterInvitation($this->user->login(), $_GET['idPartie']);
+					if(Partie::estParticipant($this->user->login(), $_GET['idPartie'])){
+						User::supprimerInvitation($this->user->login(), $_GET['idPartie']);
+						if(Partie::estComplet($_GET['idPartie'])){
+							User::supprimerToutesInvitations($_GET['idPartie']);
+							if(Partie::estCommencee($_GET['idPartie']))
+								$_SESSION['action'] = 'rejoindrePartie';
+							else
+								$_SESSION['action'] = 'demarrerPartie';
+						}
+					}
 				}
 			}
-			$this->request->initAction();
-			header('Location: index.php');			
+			parent::execute();;			
+		}
+		
+		public function rejoindrePartie(){
+			//Verification le parametre passé par url
+			if(isset($_GET['idPartie']))
+				$idPartie = $_GET['idPartie'];
+			else if(isset($_SESSION['idPartieEnCours']))
+				$idPartie = $_SESSION['idPartieEnCours'];
+			if(isset($idPartie)){
+				$estCreateur = Partie::estCreateur($this->user->login(), $idPartie);
+				$estParticipant = Partie::estParticipant($this->user->login(), $idPartie);
+				if($estCreateur || $estParticipant){
+					$_SESSION['jouer'] = 'oui';
+					$_SESSION['idPartieEnCours'] = $idPartie;
+					$this->request->initAction();
+					$_SESSION['action'] = 'jouerPartie';
+					parent::execute();
+				}else{
+					User::accepterInvitation($this->user->login(), $idPartie);
+					parent::execute();
+				}
+			}else{
+				header('Location: index.php');
+			}
 		}
 		
 		public function validateCreerPartie(){
@@ -81,6 +177,8 @@
 				unset($_POST['creationPartieEstPublic']);
 				unset($_POST['creationPartie']);
 				Partie::creerPartie($this->user->login(), $nombreJoueurs, $estPublic);
+				$idPartie = Partie::dernierePartieCreer($this->user->login())->id_partie();
+				User::accepterInvitation($this->user->login(), $idPartie);
 				$_SESSION['action'] = 'defaultAction';
 			}
 			else
@@ -128,21 +226,21 @@
 		public function listeParties(){
 			$listeParties = Partie::listeParties($this->user->login());
 			$listeParties = $this->infoListePartie($listeParties);
-			$this->afficherListeParties($listeParties, 'Rejoindre', 'WAIT', true);
+			$this->afficherListeParties($listeParties, 'Rejoindre', 'rejoindrePartie', true);
 		}
 		
 		//Toutes les parties non commencées de l'ulisateur 
 		public function listePartiesEnAttente(){
 			$listeParties = Partie::listeParties($this->user->login(), 0, 0);
 			$listeParties = $this->infoListePartie($listeParties);
-			$this->afficherListeParties($listeParties, 'Acceder à la partie', 'WAIT', true);
+			$this->afficherListeParties($listeParties, 'Démarrer la partie', 'demarrerPartie', true);
 		}
 		
 		//Toutes les parties commencées mais non terminées de l'ulisateur 
 		public function listePartiesEnCours(){
 			$listeParties = Partie::listeParties($this->user->login(), 1, 0);
 			$listeParties = $this->infoListePartie($listeParties);
-			$this->afficherListeParties($listeParties, 'Continuer');
+			$this->afficherListeParties($listeParties, 'Continuer', 'continuerPartie');
 		}
 		
 		//Toutes les parties terminées de l'ulisateur 
@@ -187,27 +285,6 @@
 		public function afficherListeParties($listeParties, $rejoindrePartieTexte = '', $actionBouton = 'rejoindrePartie', $peutInviter = false){
 			$view = new UserView($this, 'userParties', array( 'login' => $this->user->login(), 'listeParties' => $listeParties, 'rejoindrePartie' => $rejoindrePartieTexte, 'actionBouton' => $actionBouton, 'peutInviter' => $peutInviter));
 			$view->render();
-		}
-		
-		public function rejoindrePartie(){
-			//Verification le parametre passé par url
-			$idPartie = '';
-			if(isset($_GET['idPartie']))
-				$idPartie = $_GET['idPartie'];
-			$estCreateur = Partie::estCreateur($this->user->login(), $idPartie);
-			$estParticipant = Partie::estParticipant($this->user->login(), $idPartie);
-			if($estCreateur || $estParticipant){
-				if(!Partie::estComplet($idPartie)){
-					echo 'complet<br>';
-				}
-				else{
-					echo 'incomplet<br>';
-				}
-				$view = new PartieView($this, 'partie', array( 'login' => $this->user->login()));
-				$view->render();
-			}else{
-				header('Location: index.php');
-			}
 		}
 	}
 ?>

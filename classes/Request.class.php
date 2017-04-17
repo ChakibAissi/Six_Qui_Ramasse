@@ -18,6 +18,20 @@
 			$this->actionName = 'defaultAction';
 		}
 		
+		
+		
+		public function initController(){
+			$this->controllerName = 'Anonymous';
+			if(isset($_SESSION['controller']))
+				unset($_SESSION['controller']);
+			if(isset($_POST['controller']))
+				unset($_POST['controller']);
+			if(isset($_GET['controller']))
+				unset($_GET['controller']);
+			if(isset($_COOKIE['controller']))
+				unset($_COOKIE['controller']);
+		}
+		
 		public function getControllerName(){
 			if(isset($_SESSION['controller']))
 				Request::$uniqueInstance->controllerName = $_SESSION['controller'];

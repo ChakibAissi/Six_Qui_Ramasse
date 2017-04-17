@@ -50,7 +50,14 @@
 		}
 		
 		public static function listeParties($login, $est_commencee = NULL, $est_terminee = NULL, $est_public = NULL){
-			$sql = 'SELECT * FROM partie WHERE partie.id_createur = \'' . $login .'\'';
+			$sql = 'SELECT id_partie, id_createur,  nombre_joueurs, est_commencee, est_terminee, est_public, date_creation
+				FROM partie 
+				WHERE ( partie.id_createur = \'' . $login .'\'
+					OR \'' . $login . '\' IN (
+						SELECT login 
+						FROM joue j
+						WHERE j.login = \'' . $login . '\'
+						AND partie.id_partie = j.id_partie))';
 			if(!is_null($est_commencee))
 				$sql = $sql . ' AND partie.est_commencee = \'' . $est_commencee . '\'';
 			if(!is_null($est_terminee))
@@ -132,7 +139,7 @@
 			$sql = 'SELECT id_partie
 				FROM partie p
 				WHERE p.id_partie = \'' . $idPartie . '\'
-				AND p.nombre_joueurs -1 = (
+				AND p.nombre_joueurs = (
 					SELECT COUNT(j.login)
 					FROM joue j
 					WHERE j.id_partie = p.id_partie)';
@@ -143,6 +150,17 @@
 				return true;
 			}
 			//$sth->closeCursor();
+			return false;
+		}
+		
+		public static function estCommencee($idPartie){
+			$sql = 'SELECT id_partie
+				FROM partie p
+				WHERE p.id_partie = \'' . $idPartie . '\'
+				AND p.est_commencee = 1';
+			$sth = parent::query($sql);
+			if($sth->fetch())
+				return true;
 			return false;
 		}
 		
@@ -168,6 +186,32 @@
 			}
 			//$sth->closeCursor();
 			return false;
+		}
+		
+		public static function estEnAttente($idPartie){
+			$sql = 'SELECT *
+				FROM partie p
+				WHERE p.id_partie = \'' . $idPartie . '\'';
+			$sth = parent::query($sql);
+			if($sth->rowCount() >0)
+				return true;
+			return false;
+		}
+		
+		public static function demarerPartie($idPartie){
+			$sql = 'UPDATE `partie` 
+				SET `est_commencee` = 1 
+				WHERE `partie`.`id_partie` = \'' . $idPartie . '\'';
+			parent::query($sql);
+		}
+		
+		public static function dernierePartieCreer($login){
+			$sql = 'SELECT *
+				FROM partie p
+				WHERE p.id_createur = \'' . $login . '\'
+				ORDER BY id_partie DESC';
+			$sth = parent::query($sql);
+			return $sth->fetch();
 		}
 	}
 ?>

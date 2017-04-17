@@ -34,7 +34,7 @@
 		SELECT id_partie
 		FROM partie p
 		WHERE p.id_partie = :id_partie
-		AND p.nombre_joueurs -1 = (
+		AND p.nombre_joueurs = (
 			SELECT COUNT(j.login)
 			FROM joue j
 			WHERE j.id_partie = p.id_partie)');

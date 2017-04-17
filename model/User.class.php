@@ -3,13 +3,10 @@
 		
 		private $login;
 		private $mail;
-		private $score;
 		
 		public function login(){ return $this->login; }
 		
 		public function mail(){ return $this->mail; }
-		
-		public function score(){ return $this->score; }
 		
 		public static function isLoginUsed($login){
 			$isUsed = FALSE;
@@ -57,11 +54,10 @@
 			return $listeInvites;
 		}
 		
-		public static function accepterInvitation($login, $idPartie, $score){
+		public static function accepterInvitation($login, $idPartie, $score = 0){
 			$sql = 'INSERT INTO `joue` 
-				(`login`, `id_partie`, `score_partie`) VALUES 
+				(`login`, `id_partie`, `score`) VALUES 
 				(\'' . $login . '\', \''. $idPartie .'\', \'' . $score . '\')';
-			echo $sql .'<br>';
 			$sth = parent::query($sql);
 			//$sth = parent::execution('USER_ACCEPTER_INVITATION', array( ':login' => $login, ':id_partie' => $idPartie, ':score_partie' => $score));
 			//$sth->closeCursor();
@@ -71,10 +67,15 @@
 			$sql = 'DELETE FROM `est_invite_a` 
 				WHERE `est_invite_a`.`login` = \''.$login.'\' 
 				AND `est_invite_a`.`id_partie` = '.$idPartie;
-			echo $sql .'<br>';
 			$sth = parent::query($sql);
 			//$sth = parent::execution('USER_SUPPRIMER_INVITATION', array( ':login' => $login, ':id_partie' => $idPartie));
 			//$sth->closeCursor();
+		}
+		
+		public static function supprimerToutesInvitations($idPartie){
+			$sql = 'DELETE FROM `est_invite_a` 
+				WHERE `est_invite_a`.`id_partie` = '.$idPartie;
+			$sth = parent::query($sql);
 		}
 	}
 ?>

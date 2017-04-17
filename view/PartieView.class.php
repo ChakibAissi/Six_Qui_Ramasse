@@ -11,7 +11,6 @@
 		public function render(){
 			$this->loadTemplate($this->templateNames['header'], $this->args);
 			$this->loadTemplate($this->templateNames['top'], $this->args);
-			$this->loadTemplate($this->templateNames['menu'], $this->args);
 			$this->loadTemplate($this->templateNames['partieMenu'], $this->args);
 			$this->loadTemplate($this->templateNames['content'], $this->args);
 			$this->loadTemplate($this->templateNames['footer'], $this->args);

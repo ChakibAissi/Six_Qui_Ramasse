@@ -1,7 +1,7 @@
 <?php
 	class Model extends MyObject{
 		
-		protected $userProperties;
+		//protected $userProperties;
 		protected static $requetesSQL;
 
 		protected static function db(){
@@ -14,7 +14,7 @@
 			$st->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, get_called_class());
 			return $st;
 		}
-		
+		/*
 		public function __construct($userProperties = array()){
 				$this->userProperties = $userProperties;
 		}
@@ -25,7 +25,7 @@
 		
 		public function __set($property, $value){
 			$this->userProperties[$property] = $value;
-		}
+		}*/
 		
 		public static function addSqlQuery($nomRequete,$requeteSQL){
 			static::$requetesSQL[$nomRequete] = $requeteSQL;
