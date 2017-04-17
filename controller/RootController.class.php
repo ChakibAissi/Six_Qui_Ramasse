@@ -3,7 +3,6 @@
 		public function __construct($request){
 			parent::__construct($request);
 			$_SESSION['controller'] = 'root';
-			echo $this->request->getControllerName() . '-' . $this->request->getActionName() . '<br>';
 		}
 		
 		public function defaultAction(){

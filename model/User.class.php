@@ -64,17 +64,17 @@
 		}
 		
 		public static function supprimerInvitation($login, $idPartie){
-			$sql = 'DELETE FROM `est_invite_a` 
-				WHERE `est_invite_a`.`login` = \''.$login.'\' 
-				AND `est_invite_a`.`id_partie` = '.$idPartie;
+			$sql = 'DELETE FROM `invitation` 
+				WHERE `invitation`.`login` = \''.$login.'\' 
+				AND `invitation`.`id_partie` = '.$idPartie;
 			$sth = parent::query($sql);
 			//$sth = parent::execution('USER_SUPPRIMER_INVITATION', array( ':login' => $login, ':id_partie' => $idPartie));
 			//$sth->closeCursor();
 		}
 		
 		public static function supprimerToutesInvitations($idPartie){
-			$sql = 'DELETE FROM `est_invite_a` 
-				WHERE `est_invite_a`.`id_partie` = '.$idPartie;
+			$sql = 'DELETE FROM `invitation` 
+				WHERE `invitation`.`id_partie` = '.$idPartie;
 			$sth = parent::query($sql);
 		}
 	}

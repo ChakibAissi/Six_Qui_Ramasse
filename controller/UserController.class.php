@@ -18,7 +18,6 @@
 			else
 				$this->setArg('erreurUser', 'Impossible de récuperer l\'utilisateur dans la base de données');
 			$_SESSION['controller'] = 'user';
-			echo $this->request->getControllerName() . '-' . $this->request->getActionName() . '<br>';
 		}
 		
 		public function execute(){
@@ -35,7 +34,7 @@
 			$view->render();
 		}
 		
-		public function deconnection(){
+		public function deconnexion(){
 			unset($_POST);
 			session_destroy();
 			header('Location: index.php');
@@ -59,7 +58,6 @@
 			$view->render();
 		}
 
-		
 		public function jouerPartie(){
 			if(isset($_SESSION['jouer']) && isset($_SESSION['idPartieEnCours'])){
 				$this->request->initAction();
@@ -69,7 +67,6 @@
 				header('Location: index.php');
 			}
 			else{
-				echo 'NON';
 				$this->request->initAction();
 				header('Location: index.php');
 			}
@@ -82,14 +79,11 @@
 				$_SESSION['idPartieEnCours'] = $_GET['idPartie'];
 			}
 			if(isset($_SESSION['action']) && isset($_SESSION['idPartieEnCours'])){
-				echo 'ETAT1<br>';
 				if($_SESSION['action'] == 'demarrerPartie'){//rajouter vérification de la partie
-					echo 'ETAT2<br>';
 					if(Partie::estEnAttente($_SESSION['idPartieEnCours'])){
-						echo 'ETAT3<br>';
 						if(Partie::estComplet($_SESSION['idPartieEnCours'])){
-							echo 'ETAT4<br>';
 							Partie::demarerPartie($_SESSION['idPartieEnCours']);
+							PlateauController::initPlateau($_SESSION['idPartieEnCours'], Partie::nombreJoueurs($_SESSION['idPartieEnCours']));
 						}$_SESSION['jouer'] = 'jeu en cours';
 						$this->request->initAction();
 						$_SESSION['action'] = 'rejoindrePartie';
@@ -125,7 +119,6 @@
 		public function accepterInvitation(){
 			$this->request->initAction();
 			if(isset($_GET['idPartie'])){
-				echo $_GET['idPartie'];
 				if(!Partie::estParticipant($this->user->login(), $_GET['idPartie'])){
 					User::accepterInvitation($this->user->login(), $_GET['idPartie']);
 					if(Partie::estParticipant($this->user->login(), $_GET['idPartie'])){
@@ -191,7 +184,6 @@
 			}
 			else{
 				if(Partie::estComplet($_SESSION['invitationNumeroPartie'])){
-					echo 'Complet<br>';
 					$this->setArg('infoUserContent', 'La partie est complete!!!');
 					unset($_POST['invitationLogin']);
 					unset($_POST['invitation']);
@@ -212,7 +204,7 @@
 						}else {
 							$_POST['action'] = 'invitation';
 							$this->setArg('erreurInvitationLogin',  'Ce login n\'exite pas');
-							$this->setArg('connectionLogin',  $login);
+							$this->setArg('connexionLogin',  $login);
 						}
 					} else {
 						$_POST['action'] = 'invitation';
@@ -249,7 +241,7 @@
 			$listeParties = $this->infoListePartie($listeParties);
 			$this->afficherListeParties($listeParties, '');
 		}
-		
+
 		public function listeInvites($id_partie){
 			return User::listeInvites($id_partie);
 		}
@@ -264,7 +256,6 @@
 			$listeParties = $this->infoListePartie($listeParties);
 			$this->afficherListeParties($listeParties, 'Rejoindre');
 		}
-		
 		
 		public function listeInvitations(){
 			$listeParties = Partie::listeInvitations($this->user->login());

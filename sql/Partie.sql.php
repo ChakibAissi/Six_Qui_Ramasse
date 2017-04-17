@@ -40,13 +40,13 @@
 			WHERE j.id_partie = p.id_partie)');
 			
 	Partie::addSqlQuery('PARTIE_INVITER', '
-		INSERT INTO `est_invite_a` 
+		INSERT INTO `invitation` 
 			(`login`, `id_partie`) VALUES 
 			( :login, :id_partie)');
 	
 	Partie::addSqlQuery('PARTIE_EST_INVITE', '
 		SELECT login 
-		FROM est_invite_a e
+		FROM invitation e
 		WHERE e.login = :login 
 		AND e.id_partie = :id_partie');
 		

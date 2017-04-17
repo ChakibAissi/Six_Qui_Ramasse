@@ -8,8 +8,8 @@
 		public function execute(){
 			if(isset($_POST['inscription']))
 				$this->validateInscription();
-			else if(isset($_POST['connection']))
-				$this->validateConnection();
+			else if(isset($_POST['connexion']))
+				$this->validateconnexion();
 			else
 				parent::execute();
 		}
@@ -25,9 +25,9 @@
 			$view->render();
 		}
 		
-		public function connection(){
-			$_SESSION['action'] = 'connection';
-			$view = new ConnectionView($this, 'connection', $this->args);
+		public function connexion(){
+			$_SESSION['action'] = 'connexion';
+			$view = new ConnexionView($this, 'connexion', $this->args);
 			$view->render();
 		}
 		
@@ -77,16 +77,16 @@
 			}
 		}
 		
-		public function validateConnection() {
-			if(!empty($_POST['connectionLogin']) && !empty($_POST['connectionPassword'])){
-				$login = $_POST['connectionLogin'];
+		public function validateconnexion() {
+			if(!empty($_POST['connexionLogin']) && !empty($_POST['connexionPassword'])){
+				$login = $_POST['connexionLogin'];
 				if(User::isLoginUsed($login)) {
-					$password = $_POST['connectionPassword'];
+					$password = $_POST['connexionPassword'];
 					$user = User::tryLogin($login, $password);
 					if(!isset($user)) {
-						$_POST['action'] = 'connection';
-						$this->setArg('erreurConnectionPassword', 'Le mot de passe n\'est pas correct');
-						$this->setArg('connectionLogin', $_POST['connectionLogin']);
+						$_POST['action'] = 'connexion';
+						$this->setArg('erreurconnexionPassword', 'Le mot de passe n\'est pas correct');
+						$this->setArg('connexionLogin', $_POST['connexionLogin']);
 						parent::execute();
 					} else {
 						$newRequest = Request::getCurrentRequest();						
@@ -101,20 +101,20 @@
 						$userController->execute();
 					}
 				}else {
-					$_POST['action'] = 'connection';
-					$this->setArg('erreurConnection', 'Erreur connection! Veuillez vérifier le login/mot de passe');
-					$this->setArg('erreurConnectionLogin',  'Ce login n\'exite pas');
-					$this->setArg('connectionLogin',  $_POST['connectionLogin']);
+					$_POST['action'] = 'connexion';
+					$this->setArg('erreurconnexion', 'Erreur connexion! Veuillez vérifier le login/mot de passe');
+					$this->setArg('erreurconnexionLogin',  'Ce login n\'exite pas');
+					$this->setArg('connexionLogin',  $_POST['connexionLogin']);
 					parent::execute();
 				}
 			} else {
-				$_POST['action'] = 'connection';
-				if(empty($_POST['connectionLogin'])){
-					$this->setArg('erreurConnectionLogin', 'Veuillez entrer un login');
+				$_POST['action'] = 'connexion';
+				if(empty($_POST['connexionLogin'])){
+					$this->setArg('erreurconnexionLogin', 'Veuillez entrer un login');
 				}else
-					$this->setArg('connectionLogin', $_POST['connectionLogin']);
-				if(empty($_POST['connectionPassword']))
-					$this->setArg('erreurConnectionPassword', 'Veuillez entrer un mot de passe');
+					$this->setArg('connexionLogin', $_POST['connexionLogin']);
+				if(empty($_POST['connexionPassword']))
+					$this->setArg('erreurconnexionPassword', 'Veuillez entrer un mot de passe');
 				parent::execute();
 			}
 		}

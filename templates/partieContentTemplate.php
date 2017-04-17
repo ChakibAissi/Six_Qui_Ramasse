@@ -24,10 +24,35 @@
 								}
 							}
 						?>
-					</table>
-					<h3>ListePartie</h3>
+					</table>	
+				</div>
+				<div class="listeCarte">
+					<?php
+						if(isset($listeCartes)){
+							for($i=1; $i<5; $i++){
+								foreach($listeCartes['rangee'.$i] as $key => $value){
+									echo '<img src="assets/cartes/'.$listeCartes['rangee'.$i][$key].'.gif">'; 
+								}
+								echo '<br>';
+							}
+						}
+						
+					?>
+				</div>
+				<div class="main">
+					<h3>Mes cartes</h3>
+					<?php
+						if(isset($main)){
+							foreach($main as $key => $value){
+								echo '<img src="assets/cartes/'.$main[$key].'.gif">'; 
+							}
+							echo '<br>';
+						}
+						
+					?>
 				</div>
 				<div class="listePartieEnCours">
+					<h3>ListePartie</h3>
 					<table>
 						<tr>
 							<th>id partie</th>

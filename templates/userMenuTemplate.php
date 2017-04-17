@@ -8,5 +8,5 @@
 			<button><a href="index.php?action=listePartiesTerminee">Mes parties terminée</a></button>
 			<button><a href="index.php?action=listePartiesDisponibles">Rejoindre partie</a></button>
 			<button><a href="index.php?action=listeInvitations">Mes invitations</a></button>
-			<button><a href="index.php?action=deconnection">Deconnection</a></button>
+			<button><a href="index.php?action=deconnexion">Deconnexion</a></button>
 		</div>

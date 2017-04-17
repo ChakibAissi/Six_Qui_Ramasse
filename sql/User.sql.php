@@ -28,8 +28,8 @@
 		FROM joueur 
 		WHERE joueur.login IN (
 			SELECT login 
-			FROM est_invite_a
-			WHERE est_invite_a.id_partie = :id_partie)');
+			FROM invitation
+			WHERE invitation.id_partie = :id_partie)');
 	
 	User::addSqlQuery('USER_ACCEPTER_INVITATION', '
 		INSERT INTO `joue` 
@@ -38,7 +38,7 @@
 			
 	User::addSqlQuery('USER_SUPPRIMER_INVITATION', '
 		DELETE 
-		FROM est_invite_a e
+		FROM invitation e
 		WHERE  e.id_partie = :idPartie
 		AND e.login = :login');
 ?>

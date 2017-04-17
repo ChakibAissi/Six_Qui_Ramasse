@@ -97,7 +97,7 @@
 				FROM partie p
 				WHERE p.id_partie IN (
 					SELECT e.id_partie
-					FROM est_invite_a e
+					FROM invitation e
 					WHERE e.login = \'' . $login . '\')';
 			$sth = parent::query($sql);
 			//$sth = parent::execution('PARTIE_INVITATIONS', array( ':login' => $login, ':id_partie' => $idPartie));
@@ -165,7 +165,7 @@
 		}
 		
 		public static function inviter($login, $idPartie){
-			$sql = 'INSERT INTO `est_invite_a` 
+			$sql = 'INSERT INTO `invitation` 
 				(`login`, `id_partie`) VALUES 
 				(\'' . $login . '\', \''. $idPartie .'\')';
 			$sth = parent::query($sql);
@@ -175,7 +175,7 @@
 		
 		public static function estInvite($login, $idPartie){
 			$sql = 'SELECT login 
-				FROM est_invite_a e
+				FROM invitation e
 				WHERE e.login = \'' . $login . '\'
 				AND e.id_partie = \'' . $idPartie . '\'';
 			$sth = parent::query($sql);
@@ -212,6 +212,15 @@
 				ORDER BY id_partie DESC';
 			$sth = parent::query($sql);
 			return $sth->fetch();
+		}
+		
+		public static function nombreJoueurs($id_partie){
+			$sql = 'SELECT nombre_joueurs
+				FROM partie
+				WHERE partie.id_partie = \'' . $id_partie . '\'';
+			$sth = parent::query($sql);
+			if($partie = $sth->fetch())
+				return $partie->nombre_joueurs();
 		}
 	}
 ?>

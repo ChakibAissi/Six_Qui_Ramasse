@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  localhost
--- Généré le :  Lun 17 Avril 2017 à 10:51
+-- Généré le :  Lun 17 Avril 2017 à 21:18
 -- Version du serveur :  5.7.11
 -- Version de PHP :  5.6.18
 
@@ -27,15 +27,15 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `carte` (
-  `NUM_CARTE` int(11) NOT NULL,
-  `NB_BELIERS` smallint(6) DEFAULT NULL
+  `numero_carte` int(11) NOT NULL,
+  `nombre_beliers` smallint(6) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Contenu de la table `carte`
 --
 
-INSERT INTO `carte` (`NUM_CARTE`, `NB_BELIERS`) VALUES
+INSERT INTO `carte` (`numero_carte`, `nombre_beliers`) VALUES
 (1, 1),
 (2, 1),
 (3, 1),
@@ -144,22 +144,58 @@ INSERT INTO `carte` (`NUM_CARTE`, `NB_BELIERS`) VALUES
 -- --------------------------------------------------------
 
 --
--- Structure de la table `est_invite_a`
+-- Structure de la table `composition_main`
 --
 
-CREATE TABLE `est_invite_a` (
+CREATE TABLE `composition_main` (
+  `id_main` bigint(20) NOT NULL,
+  `numero_carte` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Contenu de la table `composition_main`
+--
+
+INSERT INTO `composition_main` (`id_main`, `numero_carte`) VALUES
+(7, 3),
+(6, 4),
+(7, 6),
+(6, 18),
+(7, 19),
+(6, 27),
+(7, 29),
+(7, 31),
+(6, 36),
+(6, 44),
+(7, 47),
+(6, 51),
+(7, 53),
+(7, 56),
+(6, 64),
+(7, 67),
+(6, 69),
+(7, 81),
+(6, 98),
+(6, 99);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `invitation`
+--
+
+CREATE TABLE `invitation` (
   `login` char(15) NOT NULL,
   `id_partie` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Contenu de la table `est_invite_a`
+-- Contenu de la table `invitation`
 --
 
-INSERT INTO `est_invite_a` (`login`, `id_partie`) VALUES
+INSERT INTO `invitation` (`login`, `id_partie`) VALUES
 ('maxime', 1),
 ('paul', 3),
-('clementV', 5),
 ('ayoub', 10),
 ('clementD', 10),
 ('clementV', 10),
@@ -193,62 +229,63 @@ INSERT INTO `est_invite_a` (`login`, `id_partie`) VALUES
 CREATE TABLE `joue` (
   `id_partie` bigint(20) NOT NULL,
   `login` char(15) NOT NULL,
-  `score` int(11) DEFAULT NULL
+  `score` int(11) NOT NULL,
+  `numero_carte_jouee` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Contenu de la table `joue`
 --
 
-INSERT INTO `joue` (`id_partie`, `login`, `score`) VALUES
-(1, 'yassine', 0),
-(2, 'chakib', 0),
-(2, 'lucasO', 0),
-(2, 'root', 0),
-(10, 'chakib', 0),
-(10, 'root', 0),
-(15, 'root', 0),
-(16, 'chakib', 0),
-(16, 'root', 0),
-(17, 'root', 0),
-(18, 'root', 0),
-(19, 'lucasO', 0),
-(19, 'root', 0),
-(20, 'root', 0),
-(21, 'root', 0),
-(22, 'root', 0),
-(23, 'root', 0),
-(24, 'ayoub', 0),
-(24, 'root', 0),
-(25, 'chakib', 0),
-(25, 'root', 0),
-(26, 'root', 0),
-(27, 'root', 0),
-(28, 'root', 0),
-(29, 'root', 0),
-(30, 'root', 0),
-(31, 'root', 0),
-(31, 'yassine', 0),
-(32, 'root', 0),
-(33, 'root', 0),
-(34, 'root', 0),
-(35, 'root', 0),
-(36, 'root', 0),
-(37, 'root', 0),
-(38, 'root', 0),
-(40, 'root', 0),
-(41, 'root', 0),
-(42, 'clementD', 0),
-(43, 'clementV', 0),
-(43, 'root', 0),
-(44, 'chakib', 0),
-(44, 'root', 0),
-(49, 'root', 0),
-(64, 'root', 0),
-(65, 'root', 0),
-(80, 'root', 0),
-(81, 'root', 0),
-(82, 'root', 0);
+INSERT INTO `joue` (`id_partie`, `login`, `score`, `numero_carte_jouee`) VALUES
+(1, 'yassine', 0, NULL),
+(2, 'chakib', 0, NULL),
+(2, 'lucasO', 0, NULL),
+(2, 'root', 0, NULL),
+(10, 'chakib', 0, NULL),
+(10, 'root', 0, NULL),
+(15, 'root', 0, NULL),
+(16, 'chakib', 0, NULL),
+(16, 'root', 0, NULL),
+(17, 'root', 0, NULL),
+(18, 'root', 0, NULL),
+(19, 'lucasO', 0, NULL),
+(19, 'root', 0, NULL),
+(20, 'root', 0, NULL),
+(21, 'root', 0, NULL),
+(22, 'root', 0, NULL),
+(23, 'root', 0, NULL),
+(24, 'ayoub', 0, NULL),
+(24, 'root', 0, NULL),
+(25, 'chakib', 0, NULL),
+(25, 'root', 0, NULL),
+(26, 'root', 0, NULL),
+(27, 'root', 0, NULL),
+(28, 'root', 0, NULL),
+(29, 'root', 0, NULL),
+(30, 'root', 0, NULL),
+(31, 'root', 0, NULL),
+(31, 'yassine', 0, NULL),
+(32, 'root', 0, NULL),
+(33, 'root', 0, NULL),
+(34, 'root', 0, NULL),
+(35, 'root', 0, NULL),
+(36, 'root', 0, NULL),
+(37, 'root', 0, NULL),
+(38, 'root', 0, NULL),
+(40, 'root', 0, NULL),
+(41, 'root', 0, NULL),
+(42, 'clementD', 0, NULL),
+(43, 'clementV', 0, NULL),
+(43, 'root', 0, NULL),
+(44, 'chakib', 0, NULL),
+(44, 'root', 0, NULL),
+(49, 'root', 0, NULL),
+(64, 'root', 0, NULL),
+(65, 'root', 0, NULL),
+(80, 'root', 0, NULL),
+(81, 'root', 0, NULL),
+(82, 'root', 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -299,10 +336,18 @@ INSERT INTO `joueur` (`login`, `password`, `score`, `mail`) VALUES
 --
 
 CREATE TABLE `main` (
-  `ID_MAIN` int(11) NOT NULL,
-  `LOGIN` char(15) NOT NULL,
-  `ID_PARTIE` bigint(20) NOT NULL
+  `id_main` bigint(20) NOT NULL,
+  `login` char(15) NOT NULL,
+  `id_partie` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Contenu de la table `main`
+--
+
+INSERT INTO `main` (`id_main`, `login`, `id_partie`) VALUES
+(6, 'lucasO', 19),
+(7, 'root', 19);
 
 -- --------------------------------------------------------
 
@@ -328,13 +373,12 @@ INSERT INTO `partie` (`id_partie`, `id_createur`, `nombre_joueurs`, `est_commenc
 (1, 'yassine', 5, 1, 0, 1, '2017-03-13'),
 (2, 'ayoub', 7, 0, 0, 1, '2017-04-16'),
 (3, 'a', 2, NULL, NULL, NULL, NULL),
-(5, 'axel', 2, NULL, NULL, NULL, NULL),
 (10, 'root', 10, 1, 0, 1, '2017-04-14'),
 (15, 'root', 2, 0, 0, 1, '2017-04-13'),
 (16, 'root', 2, 1, 0, 1, '2017-04-13'),
 (17, 'root', 2, 0, 0, 1, '2017-04-13'),
 (18, 'root', 2, 0, 0, 1, '2017-04-13'),
-(19, 'root', 2, 0, 0, 1, '2017-04-13'),
+(19, 'root', 2, 1, 0, 1, '2017-04-13'),
 (20, 'root', 2, 0, 0, 1, '2017-04-13'),
 (21, 'root', 2, 0, 0, 1, '2017-04-13'),
 (22, 'root', 2, 0, 0, 1, '2017-04-13'),
@@ -370,26 +414,146 @@ INSERT INTO `partie` (`id_partie`, `id_createur`, `nombre_joueurs`, `est_commenc
 -- --------------------------------------------------------
 
 --
--- Structure de la table `rangee`
+-- Structure de la table `plateau`
 --
 
-CREATE TABLE `rangee` (
-  `NUM_RANGEE` int(11) NOT NULL,
-  `ID_PARTIE` bigint(20) NOT NULL,
-  `NB_BELIERS_RANGEE` smallint(6) DEFAULT NULL,
-  `valeur_derniere_carte` int(11) NOT NULL
+CREATE TABLE `plateau` (
+  `id_partie` bigint(20) NOT NULL,
+  `numero_rangee` int(11) NOT NULL,
+  `numero_carte` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Contenu de la table `plateau`
+--
+
+INSERT INTO `plateau` (`id_partie`, `numero_rangee`, `numero_carte`) VALUES
+(19, 0, 1),
+(19, 0, 2),
+(19, 0, 5),
+(19, 0, 7),
+(19, 0, 8),
+(19, 0, 9),
+(19, 0, 10),
+(19, 0, 11),
+(19, 0, 12),
+(19, 0, 13),
+(19, 0, 14),
+(19, 0, 15),
+(19, 0, 16),
+(19, 0, 17),
+(19, 0, 20),
+(19, 0, 21),
+(19, 0, 22),
+(19, 0, 23),
+(19, 0, 24),
+(19, 0, 25),
+(19, 0, 26),
+(19, 0, 28),
+(19, 0, 30),
+(19, 0, 32),
+(19, 0, 33),
+(19, 0, 34),
+(19, 0, 35),
+(19, 0, 37),
+(19, 0, 38),
+(19, 0, 39),
+(19, 0, 40),
+(19, 0, 41),
+(19, 0, 43),
+(19, 0, 45),
+(19, 0, 46),
+(19, 0, 48),
+(19, 0, 49),
+(19, 0, 50),
+(19, 0, 52),
+(19, 0, 54),
+(19, 0, 55),
+(19, 0, 57),
+(19, 0, 58),
+(19, 0, 59),
+(19, 0, 60),
+(19, 0, 61),
+(19, 0, 62),
+(19, 0, 63),
+(19, 0, 65),
+(19, 0, 66),
+(19, 0, 68),
+(19, 0, 70),
+(19, 0, 72),
+(19, 0, 73),
+(19, 0, 74),
+(19, 0, 75),
+(19, 0, 76),
+(19, 0, 77),
+(19, 0, 78),
+(19, 0, 79),
+(19, 0, 80),
+(19, 0, 82),
+(19, 0, 83),
+(19, 0, 84),
+(19, 0, 85),
+(19, 0, 86),
+(19, 0, 87),
+(19, 0, 88),
+(19, 0, 89),
+(19, 0, 90),
+(19, 0, 91),
+(19, 0, 92),
+(19, 0, 93),
+(19, 0, 94),
+(19, 0, 95),
+(19, 0, 96),
+(19, 0, 100),
+(19, 0, 101),
+(19, 0, 102),
+(19, 0, 103),
+(19, 1, 42),
+(19, 2, 71),
+(19, 3, 104),
+(19, 4, 97),
+(19, 5, 3),
+(19, 5, 4),
+(19, 5, 6),
+(19, 5, 18),
+(19, 5, 19),
+(19, 5, 27),
+(19, 5, 29),
+(19, 5, 31),
+(19, 5, 36),
+(19, 5, 44),
+(19, 5, 47),
+(19, 5, 51),
+(19, 5, 53),
+(19, 5, 56),
+(19, 5, 64),
+(19, 5, 67),
+(19, 5, 69),
+(19, 5, 81),
+(19, 5, 98),
+(19, 5, 99);
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `se_compose_de`
+-- Structure de la table `rangee`
 --
 
-CREATE TABLE `se_compose_de` (
-  `ID_MAIN` int(11) NOT NULL,
-  `NUM_CARTE` int(11) NOT NULL
+CREATE TABLE `rangee` (
+  `numero_rangee` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Contenu de la table `rangee`
+--
+
+INSERT INTO `rangee` (`numero_rangee`) VALUES
+(0),
+(1),
+(2),
+(3),
+(4),
+(5);
 
 --
 -- Index pour les tables exportées
@@ -399,12 +563,20 @@ CREATE TABLE `se_compose_de` (
 -- Index pour la table `carte`
 --
 ALTER TABLE `carte`
-  ADD PRIMARY KEY (`NUM_CARTE`);
+  ADD PRIMARY KEY (`numero_carte`);
 
 --
--- Index pour la table `est_invite_a`
+-- Index pour la table `composition_main`
 --
-ALTER TABLE `est_invite_a`
+ALTER TABLE `composition_main`
+  ADD PRIMARY KEY (`id_main`,`numero_carte`),
+  ADD UNIQUE KEY `SE_COMPOSE_DE_PK` (`id_main`,`numero_carte`),
+  ADD KEY `FK_SE_COMPOSE_DE2` (`numero_carte`);
+
+--
+-- Index pour la table `invitation`
+--
+ALTER TABLE `invitation`
   ADD PRIMARY KEY (`login`,`id_partie`),
   ADD KEY `FK_EST_INVITE_A2` (`id_partie`);
 
@@ -413,7 +585,8 @@ ALTER TABLE `est_invite_a`
 --
 ALTER TABLE `joue`
   ADD PRIMARY KEY (`id_partie`,`login`),
-  ADD KEY `FK_JOUE2` (`login`);
+  ADD KEY `FK_JOUE2` (`login`),
+  ADD KEY `numero_carte_jouee` (`numero_carte_jouee`);
 
 --
 -- Index pour la table `joueur`
@@ -425,9 +598,9 @@ ALTER TABLE `joueur`
 -- Index pour la table `main`
 --
 ALTER TABLE `main`
-  ADD PRIMARY KEY (`ID_MAIN`),
-  ADD KEY `FK_POSSEDE` (`LOGIN`),
-  ADD KEY `FK_EST_DANS` (`ID_PARTIE`);
+  ADD PRIMARY KEY (`id_main`),
+  ADD KEY `FK_POSSEDE` (`login`),
+  ADD KEY `FK_EST_DANS` (`id_partie`);
 
 --
 -- Index pour la table `partie`
@@ -437,24 +610,28 @@ ALTER TABLE `partie`
   ADD KEY `FK_CREE` (`id_createur`);
 
 --
+-- Index pour la table `plateau`
+--
+ALTER TABLE `plateau`
+  ADD PRIMARY KEY (`id_partie`,`numero_carte`,`numero_rangee`),
+  ADD KEY `FK_RANGEE` (`numero_rangee`),
+  ADD KEY `FK_CARTE` (`numero_carte`);
+
+--
 -- Index pour la table `rangee`
 --
 ALTER TABLE `rangee`
-  ADD PRIMARY KEY (`NUM_RANGEE`),
-  ADD KEY `FK_EST_DANS` (`ID_PARTIE`);
-
---
--- Index pour la table `se_compose_de`
---
-ALTER TABLE `se_compose_de`
-  ADD PRIMARY KEY (`ID_MAIN`,`NUM_CARTE`),
-  ADD UNIQUE KEY `SE_COMPOSE_DE_PK` (`ID_MAIN`,`NUM_CARTE`),
-  ADD KEY `FK_SE_COMPOSE_DE2` (`NUM_CARTE`);
+  ADD PRIMARY KEY (`numero_rangee`);
 
 --
 -- AUTO_INCREMENT pour les tables exportées
 --
 
+--
+-- AUTO_INCREMENT pour la table `main`
+--
+ALTER TABLE `main`
+  MODIFY `id_main` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 --
 -- AUTO_INCREMENT pour la table `partie`
 --
@@ -465,25 +642,33 @@ ALTER TABLE `partie`
 --
 
 --
--- Contraintes pour la table `est_invite_a`
+-- Contraintes pour la table `composition_main`
 --
-ALTER TABLE `est_invite_a`
+ALTER TABLE `composition_main`
+  ADD CONSTRAINT `FK_SE_COMPOSE_DE` FOREIGN KEY (`id_main`) REFERENCES `main` (`id_main`),
+  ADD CONSTRAINT `FK_SE_COMPOSE_DE2` FOREIGN KEY (`numero_carte`) REFERENCES `carte` (`numero_carte`) ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `invitation`
+--
+ALTER TABLE `invitation`
   ADD CONSTRAINT `FK_EST_INVITE_A` FOREIGN KEY (`login`) REFERENCES `joueur` (`login`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `FK_EST_INVITE_A2` FOREIGN KEY (`id_partie`) REFERENCES `partie` (`id_partie`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `FK_EST_INVITE_A2` FOREIGN KEY (`id_partie`) REFERENCES `partie` (`id_partie`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `joue`
 --
 ALTER TABLE `joue`
   ADD CONSTRAINT `FK_JOUE` FOREIGN KEY (`id_partie`) REFERENCES `partie` (`id_partie`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `FK_JOUE2` FOREIGN KEY (`login`) REFERENCES `joueur` (`login`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `FK_JOUE2` FOREIGN KEY (`login`) REFERENCES `joueur` (`login`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_JOUE3` FOREIGN KEY (`numero_carte_jouee`) REFERENCES `carte` (`numero_carte`) ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `main`
 --
 ALTER TABLE `main`
-  ADD CONSTRAINT `FK_EST_DANS` FOREIGN KEY (`ID_PARTIE`) REFERENCES `partie` (`id_partie`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `FK_POSSEDE` FOREIGN KEY (`LOGIN`) REFERENCES `joueur` (`login`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `FK_EST_DANS` FOREIGN KEY (`id_partie`) REFERENCES `partie` (`id_partie`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_POSSEDE` FOREIGN KEY (`login`) REFERENCES `joueur` (`login`) ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `partie`
@@ -492,11 +677,12 @@ ALTER TABLE `partie`
   ADD CONSTRAINT `FK_CREE` FOREIGN KEY (`id_createur`) REFERENCES `joueur` (`login`) ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `se_compose_de`
+-- Contraintes pour la table `plateau`
 --
-ALTER TABLE `se_compose_de`
-  ADD CONSTRAINT `FK_SE_COMPOSE_DE` FOREIGN KEY (`ID_MAIN`) REFERENCES `main` (`ID_MAIN`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `FK_SE_COMPOSE_DE2` FOREIGN KEY (`NUM_CARTE`) REFERENCES `carte` (`NUM_CARTE`) ON UPDATE CASCADE;
+ALTER TABLE `plateau`
+  ADD CONSTRAINT `FK_CARTE` FOREIGN KEY (`numero_carte`) REFERENCES `carte` (`numero_carte`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_PARTIE` FOREIGN KEY (`id_partie`) REFERENCES `partie` (`id_partie`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_RANGEE` FOREIGN KEY (`numero_rangee`) REFERENCES `rangee` (`numero_rangee`) ON UPDATE CASCADE;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
