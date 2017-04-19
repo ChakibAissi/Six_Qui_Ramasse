@@ -26,12 +26,20 @@
 						?>
 					</table>	
 				</div>
+				<?php
+					if(isset($choixRangee))
+						echo '<h4>'.$choixRangee.'</h4>';
+				?>
 				<div class="listeCarte">
 					<?php
 						if(isset($listeCartes)){
 							for($i=1; $i<5; $i++){
 								foreach($listeCartes['rangee'.$i] as $key => $value){
+									if(isset($choisirRangee))
+										echo '<a href="index.php?action=choisirRangee&amp;numeroRangee='.$i.'">';
 									echo '<img src="assets/cartes/'.$listeCartes['rangee'.$i][$key].'.gif">'; 
+									if(isset($choisirRangee))
+										echo '</a>';
 								}
 								echo '<br>';
 							}
@@ -44,7 +52,15 @@
 					<?php
 						if(isset($main)){
 							foreach($main as $key => $value){
-								echo '<img src="assets/cartes/'.$main[$key].'.gif">'; 
+								echo '<a ';
+								if(isset($carteJouee)){
+									if($carteJouee == $value){
+										echo 'class="carteJouee" ';
+									}
+								}
+								if(!isset($changementCarteImpossible))
+									echo 'href="index.php?action=jouerCarte&amp;numeroCarte='.$value.'"';
+								echo '><img src="assets/cartes/'.$main[$key].'.gif"></a>'; 
 							}
 							echo '<br>';
 						}

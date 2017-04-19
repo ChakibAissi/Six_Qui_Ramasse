@@ -21,7 +21,7 @@
 			$listeParticipants = User::listeParticipants($id_partie);
 			foreach($listeParticipants as $key => $login){
 				Main::creerMain($login, $id_partie);
-				$id_main = Main::getMain($login, $id_partie)->id_main();
+				$id_main = Main::getMain($login, $id_partie);
 				for($i = 0; $i<10; $i++){
 					$numero_carte = Plateau::piocher($id_partie);
 					Plateau::poserCarte($id_partie, 5, $numero_carte);

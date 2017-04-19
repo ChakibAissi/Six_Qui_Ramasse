@@ -62,9 +62,9 @@
 			if(isset($_SESSION['jouer']) && isset($_SESSION['idPartieEnCours'])){
 				$this->request->initAction();
 				$_SESSION['controller'] = 'joueur';
-				//$joueurController = Dispatcher::getCurrentDispatcher()->dispatch($this->request);
-				//$joueurController->execute();
-				header('Location: index.php');
+				$joueurController = Dispatcher::getCurrentDispatcher()->dispatch($this->request);
+				$joueurController->execute();
+				//header('Location: index.php');
 			}
 			else{
 				$this->request->initAction();

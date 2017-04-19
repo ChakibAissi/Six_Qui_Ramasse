@@ -8,15 +8,14 @@
 	
 		public function nombre_beliers(){ return $this->nombre_beliers; }
 		
-		public function getCarte($numero_carte){
+		public static function getCarte($numero_carte){
 			$sql = 'SELECT *
 				FROM carte
 				WHERE carte.numero_carte = \'' . $numero_carte . '\'';
-			$sth = parent($sql);
+			$sth = parent::query($sql);
 			if($carte = $sth->fetch()){
 				return $carte;
 			}
-		}
-		
+		}		
 	}
 ?>

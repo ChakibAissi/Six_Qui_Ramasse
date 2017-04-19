@@ -18,7 +18,18 @@
 			AND main.id_partie = \'' . $id_partie . '\'';
 			$sth = parent::query($sql);
 			if($main = $sth->fetch()){
-				return $main->id_main;
+				return $main->id_main();
+			}
+		}
+		
+		public static function getLogin($id_main, $id_partie){
+			$sql = 'SELECT login
+			FROM main
+			WHERE main.id_main = \'' . $id_main . '\'
+			AND main.id_partie = \'' . $id_partie . '\'';
+			$sth = parent::query($sql);
+			if($main = $sth->fetch()){
+				return $main->login();
 			}
 		}
 		
@@ -34,6 +45,21 @@
 				(`id_main`, `numero_carte`) VALUES 
 				(\'' . $idMain . '\', \'' . $numeroCarte . '\')';
 			parent::query($sql);
+		}
+		
+		public static function listeIdMain($id_partie){
+			$sql = 'SELECT id_main
+				FROM main m
+				WHERE m.id_partie = \'' . $id_partie . '\'';
+			echo $sql . '<br>';
+			$sth = parent::query($sql);
+			$listeIdMain = array();
+			$k = 0;
+			while($main = $sth->fetch()){
+				$listeIdMain[$k] = $main->id_main();
+				$k++;
+			}
+			return $listeIdMain;
 		}
 	}
 ?>

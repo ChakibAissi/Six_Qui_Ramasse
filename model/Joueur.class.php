@@ -4,7 +4,6 @@
 		private $login;
 		private $id_partie;
 		private $score;
-		private $carteJoue = NULL;
 		
 		public function login(){ return $this->login; }
 		
@@ -19,10 +18,10 @@
 			AND joue.id_partie = \'' . $id_partie . '\'';
 			$sth = parent::query($sql);
 			if($joueur = $sth->fetch()){
-				$sth->closeCursor();
 				return $joueur;
 			}
 		}
+		
 		public static function listeJoueurs($id_partie){
 			$sql = 'SELECT login, score
 				FROM  joue
@@ -36,6 +35,13 @@
 				$listeJoueurs['joueur'.$numJoueurs]['score'] = $joueur->score();
 			}
 			return $listeJoueurs;
+		}
+		public static function ajouterScore($login, $id_partie, $score){
+			$sql = 'UPDATE joue 
+				SET score = \'' . $score . '\'
+				WHERE joue.id_partie = \'' . $id_partie . '\'
+				AND joue.login = \'' . $login . '\'';
+			$sth = parent::query($sql);
 		}
 	}
 ?>
